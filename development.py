@@ -53,4 +53,9 @@ for ny in range(0, 2 * NPML[3]):
     for i in range(0, Nx2):
         sigy[i][ny1] = (0.5 * e0 / dt) * (ny / 2 / NPML[3]) ** 3
 
+# Compute update coefficients
+sigHx = np.zeros(shape=(Nx, Ny))
+sigHy = np.zeros(shape=(Nx, Ny))
+
+
 
