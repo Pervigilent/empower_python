@@ -3,11 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import math
 
-def division(dividend, divisor):
-	output = np.zeros_like(dividend)
-	for i in range(0, dividend.size):
-		output[i] = dividend[i] / divisor[i]
-	return output
 
 Z_LENGTH = 1E-5
 Z_MINIMUM = 1E-6
@@ -16,11 +11,13 @@ STEPS = 500
 c0 = 3E8 # [meters per second]
 REPORT_INTERVAL = 50
 
+
 def source(time, tau):
 	# tau = 1
 	time_0 = 6 * tau
 	g = math.exp(-((time - time_0) / tau) ** 2)
 	return g
+
 
 def calculate_field(step):
 	LAMBDA_MINIMUM = 500E-9 # Smallest wavelength (meters)
@@ -71,9 +68,9 @@ def calculate_field(step):
 	delta_z = delta
 
 	# Compute update coefficients
-	m_ey = division(np.full_like(relative_permittivity, (light_speed * time_step)),
+	m_ey = np.divide(np.full_like(relative_permittivity, (light_speed * time_step)),
 					relative_permittivity)  # mEy (update coefficient)
-	m_hx = division(np.full_like(relative_permeability, (light_speed * time_step)),
+	m_hx = np.divide(np.full_like(relative_permeability, (light_speed * time_step)),
 					relative_permeability)  # mHY (update coefficient)
 	h_x = np.zeros(z_size)  # Hx
 	e_y = np.zeros(z_size)  # Ey
@@ -106,6 +103,7 @@ def calculate_field(step):
 		print("Iteration: " + str(step) + ", Maximum: " + str(max(e_y)) +
 			  ", Source: " + str(source(step, tau)) + ", Cells: " + str(z_size))
 	return myPlot
+
 
 x = np.linspace(0, Z_LENGTH, Z_SIZE)
 e_0 = np.zeros(Z_SIZE)

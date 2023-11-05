@@ -20,6 +20,10 @@ CEx = np.zeros(shape=(Nx, Ny, Nz))
 Ez = np.zeros(shape=(Nx, Ny, Nz))
 Ey = np.zeros(shape=(Nx, Ny, Nz))
 
+c0 = 3E8
+URxx = np.ones(shape=(Nx, Ny))
+URyy = np.ones(shape=(Nx, Ny))
+
 # Compute CEx
 for nx in range(0, Nx):
     for ny in range(0, Ny - 1):
@@ -54,8 +58,27 @@ for ny in range(0, 2 * NPML[3]):
         sigy[i][ny1] = (0.5 * e0 / dt) * (ny / 2 / NPML[3]) ** 3
 
 # Compute update coefficients
-sigHx = np.zeros(shape=(Nx, Ny))
-sigHy = np.zeros(shape=(Nx, Ny))
+#sigHx = np.zeros(shape=(Nx, Ny))
+#sigHy = np.zeros(shape=(Nx, Ny))
 
+sigHx = sigx[0:Nx2:2, 1:Ny2:2]
+sigHy = sigy[0:Nx2:2, 1:Ny2:2]
+mHx0 = (1 / dt) + sigHy / (2 * e0)
+mHx1 = ((1 / dt) - sigHy / (2 * e0))
+mHx2 = - c0 / URxx / mHx0
+mHx3 = - (c0 * dt / e0) * sigHx / URxx / mHx0
 
+sigHx = sigx[1:Nx2:2, 0:Ny2:2]
+sigHy = sigy[1:Nx2:2, 0:Ny2:2]
+mHy0 = (1 / dt) + sigHx / (2 * e0)
+mHy1 = ((1 / dt) - sigHx / (2 * e0)) / mHy0
+mHy2 = - c0 / URyy / mHy0
+mHy3 = - (c0 * dt / e0) * sigHy / URyy / mHy0
 
+sigDx = sigx[0:Nx2:2, 0:Ny2:2]
+sigDy = sigy[0:Nx2:2, 0:Ny2:2]
+mDz0 = (1 / dt) + (sigDx + sigDy) / (2 * e0) + sigDx * sigDy * (dt / 4 / e0 ** 2)
+mDz1 = (1 / dt) - (sigDx + sigDy) / (2 * e0) - sigDx * sigDy * (dt / 4 / e0 ** 2)
+mDz1 = mDz1 / mDz0
+mDz2 = c0 / mDz0
+mDz4 = - (dt / e0 ** 2) * sigDx * sigDy / mDz0
