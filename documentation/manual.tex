@@ -1,12 +1,50 @@
 \documentclass{book}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 
 \begin{document}
 	\chapter{Relativistic Formulation}
+	The four-current, or four-current density, comprises the following components
+	\begin{align}
+		J^\mu&=(c\rho,j^1,j^2,j^3)\\
+		&=(c\rho,\mathbf{j})\mathrm{.}
+	\end{align}
+	The Lorenz gauge condition $\partial_\mu A^\mu=0$ allows a simplification of Maxwell's equation
+	\begin{equation}
+		\Box A^\mu=\mu_0J^\mu
+	\end{equation}
+	where the d'Alembertian is defined as follows
+	\begin{align}
+		\Box&=\partial^\mu\partial_\mu\\
+		&=\frac{1}{c^2}\frac{\partial^2}{\partial t^2}-\Delta\\
+		&=\frac{1}{c^2}\frac{\partial^2}{\partial t^2}-\nabla^2
+	\end{align}
+	
 	Maxwell's equations are given by
 	\begin{align}
 		dF&=0\\
 		d\star F&=J
+	\end{align}
+	
+	The electromagnetic four-potential $A^\mu$ is a combination of the electric scalar potential $\phi$ and the magnetic vector potential $\mathbf{A}$
+	\begin{equation}
+		A^\mu=(\frac{1}{c}\phi,\mathbf{A})\mathrm{.}
+	\end{equation}
+	Given that the electric and magnetic fields are related to $\phi$ and $\mathbf{A}$ by
+	\begin{align}
+		\mathbf{E}&=-\nabla\phi-\frac{\partial\mathbf{A}}{\partial t}\\
+		\mathbf{B}&=\nabla\times\mathbf{A}
+	\end{align}
+	We can write the electromagnetic tensor as follows
+	\begin{align}
+		F^{\mu\nu}&=\partial^\mu A^\nu-\partial^\nu A^\mu\\
+		&=
+		\begin{bmatrix}
+			0 & -E_x/c & -E_y/c & -E_z/c\\
+			E_x/c & 0 & -B_z & B_y\\
+			E_y/c & B_z & 0 & -B_x\\
+			E_z/c & -B_y & B_x & 0
+		\end{bmatrix}
 	\end{align}
 	
 	where $F$ is the Faraday-two form, also called the electromagnetic two-form, $J$ is the current three-form, and $\star$ is the Hodge star operator.
