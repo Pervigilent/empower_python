@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+	\title{Filter Notes}
+	\author{Stewart Nash}
+
+	\maketitle
+	\section{Group Delay}
+In a source-free, linear, isotropic, homogeneous region, Maxwell's curl equations in phasor form are
+\begin{align}
+	\nabla\times\vec{E}&=-j\omega\mu\vec{H}\,,\\
+	\nabla\times\vec{H}&=j\omega\epsilon\vec{E}\,.
+\end{align}
+These yield the wave equations which are known as the Helmholtz equations
+\begin{align}
+	\nabla^2\vec{E}+\omega^2\mu\epsilon\vec{E}&=0\,,\\
+	\nabla^2\vec{H}+\omega^2\mu\epsilon\vec{H}&=0\,.
+\end{align}
+The constant $k=\omega\sqrt{\mu\epsilon}$ is known as the \emph{propagation constant}, phase constant, or wave number. It is given in units of inverse length.
+We could obtain a plane-wave solution of the Helmholtz equation in an arbitrary direction. But for generality, let us assume an arbitrary direction $r$ which could represent a radial component of a spherical solution to the Helmholtz equation. The velocity of a wave is called the phase velocity because it is the velocity at which a fixed phase point on the wave travels. It is given by
+\begin{equation}
+	v_p=\frac{dr}{dt}=\frac{\omega}{k}=\frac{1}{\sqrt{\mu\epsilon}}\,.
+\end{equation}
+
+\end{document}
+
