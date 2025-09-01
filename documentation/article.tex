@@ -10,19 +10,56 @@
 	\section{Group Delay}
 In a source-free, linear, isotropic, homogeneous region, Maxwell's curl equations in phasor form are
 \begin{align}
-	\nabla\times\vec{E}&=-j\omega\mu\vec{H}\,,\\
-	\nabla\times\vec{H}&=j\omega\epsilon\vec{E}\,.
+	\nabla\times\vec{E}&=-j\omega\mu\vec{H},\\
+	\nabla\times\vec{H}&=j\omega\epsilon\vec{E}.
 \end{align}
 These yield the wave equations which are known as the Helmholtz equations
 \begin{align}
-	\nabla^2\vec{E}+\omega^2\mu\epsilon\vec{E}&=0\,,\\
-	\nabla^2\vec{H}+\omega^2\mu\epsilon\vec{H}&=0\,.
+	\nabla^2\vec{E}+\omega^2\mu\epsilon\vec{E}&=0,\\
+	\nabla^2\vec{H}+\omega^2\mu\epsilon\vec{H}&=0.
 \end{align}
 The constant $k=\omega\sqrt{\mu\epsilon}$ is known as the \emph{propagation constant}, phase constant, or wave number. It is given in units of inverse length.
 We could obtain a plane-wave solution of the Helmholtz equation in an arbitrary direction. But for generality, let us assume an arbitrary direction $r$ which could represent a radial component of a spherical solution to the Helmholtz equation. The velocity of a wave is called the phase velocity because it is the velocity at which a fixed phase point on the wave travels. It is given by
 \begin{equation}
-	v_p=\frac{dr}{dt}=\frac{\omega}{k}=\frac{1}{\sqrt{\mu\epsilon}}\,.
+	v_p=\frac{dr}{dt}=\frac{\omega}{k}=\frac{1}{\sqrt{\mu\epsilon}}.
 \end{equation}
+In a lossy medium with conductivity $\sigma$ Maxwell's curl equations are
+\begin{align}
+	\nabla\times\vec{E}&=-j\omega\mu\vec{H},\\
+	\nabla\times\vec{H}&=j\omega\epsilon\vec{E}+\sigma\vec{E}.
+\end{align}
+The resulting Helmholtz wave equations are
+\begin{align}
+	\nabla^2\vec{E}+\omega^2\mu\epsilon\left(1-j\frac{\sigma}{\omega\epsilon}\right)\vec{E}&=0,\\
+	\nabla^2\vec{H}++\omega^2\mu\epsilon\left(1-j\frac{\sigma}{\omega\epsilon}\right)\vec{H}&=0.
+\end{align}
+If we define the \emph{complex propagation constant} as
+\begin{equation}
+	\gamma=\alpha+j\beta=j\omega\sqrt{(\mu\epsilon)\left(1-j\frac{\sigma}{\omega\epsilon}\right)}
+\end{equation}
+with attenuation constant $\alpha$ and phase constant $\beta$. In this case, we have a phase velocity given by
+\begin{equation}
+	v_p=\frac{dr}{dt}=\frac{\omega}{\beta}.
+\end{equation}
+The telegrapher's equations yield the phasor form of wave propagation of voltage and current on a generalized transmission line in the direction $\mathbf{r}$
+\begin{align}
+	D^2_{\hat{\mathbf{r}}}\tilde{V}(\mathbf{r})-\gamma^2(\omega)\tilde{V}(\mathbf{r})&=0,\\
+	D^2_{\hat{\mathbf{r}}}\tilde{I}(\mathbf{r})-\gamma^2(\omega)\tilde{I}(\mathbf{r})&=0.
+\end{align}
+On a lossless line, the propagation constant and phase constant are
+\begin{align}
+	\gamma&=j\omega\sqrt{LC},\\
+	\beta&=\omega\sqrt{LC}.
+\end{align}
+The phase velocity on a lossless line is
+\begin{equation}
+	v_p=\frac{\omega}{\beta}=\frac{1}{\sqrt{LC}}.
+\end{equation}
+On a lossy line, the propagation constant and phase velocity are
+\begin{align}
+	\gamma&=\alpha+j\beta=\sqrt{(R+j\omega{L})(G+j\omega{C})},\\
+	v_p&=\frac{\omega}{\beta(\omega)}.
+\end{align}
 
 \end{document}
 
