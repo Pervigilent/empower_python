@@ -7,7 +7,8 @@
 	\author{Stewart Nash}
 
 	\maketitle
-	\section{Group Delay}
+	\section{Transmission Lines}
+		\subsection{Group Velocity}
 In a source-free, linear, isotropic, homogeneous region, Maxwell's curl equations in phasor form are
 \begin{align}
 	\nabla\times\vec{E}&=-j\omega\mu\vec{H},\\
@@ -60,6 +61,68 @@ On a lossy line, the propagation constant and phase velocity are
 	\gamma&=\alpha+j\beta=\sqrt{(R+j\omega{L})(G+j\omega{C})},\\
 	v_p&=\frac{\omega}{\beta(\omega)}.
 \end{align}
+The group velocity can be interpreted physically as the velocity at which a narrowband signal propagates. Consider a system whose transfer function is given by $H(\omega)=Ae^{-j\beta{r}}$ and whose input signal $x(t)$ is a baseband function $u(t)$ modulated by the tone $\mathrm{Re}\{e^{j\omega_0t}\}$ so that $X(\omega)=U(\omega-\omega_0)$. In the time domain, the output signal is given by
+\begin{equation}
+	y(t)=\frac{1}{2\pi}\mathrm{Re}\left\{\int^{\infty}_{-\infty}{AU(\omega-\omega_0)e^{j(\omega{t}-\beta{r})}\,d\omega}\right\}.
+\end{equation}
+If $U(\omega)$ is narrowband---$\omega_m\ll\omega_0$ where $\omega_m$ is the maximum frequency of the baseband function $u(t)$---then the propagation constant $\beta$ can be linearized using a Taylor series expansion about $\omega_0$,
+\begin{equation}
+	\begin{split}
+		\beta(\omega)&\approx\beta(\omega_0)+\left.\frac{d\beta}{d\omega}\right|_{\omega=\omega_0}(\omega-\omega_0)\\
+		&=\beta_0+{\beta_0}^\prime(\omega-\omega_0).
+	\end{split}
+\end{equation}
+This means that the output signal is
+\begin{equation}
+	y(t)\approx{Au(t-{\beta_0}^\prime{r})\cos{(\omega_0t-\beta_0r)}}
+\end{equation}
+and the group velocity is
+\begin{equation}
+	v_g\approx\frac{1}{{\beta_0}^\prime}=\left.\left(\frac{d\beta}{d\omega}\right)^{-1}\right|_{\omega=\omega_0}.
+\end{equation}
+		\subsection{Group Delay}
+Group delay and phase delay describe the differential delay times of a signals frequency components as they propagate through an LTI system. Consider a system whose transfer function is given by $H(\omega)=|H(\omega)|e^{j\phi(\omega)}=Ae^{j\phi(\omega)}$ and whose input signal $x(t)$ is a baseband function $u(t)$ modulated by the tone $\mathrm{Re}\{e^{j\omega_0t}\}$ so that $X(\omega)=U(\omega-\omega_0)$. In the time domain, the output signal is given by
+\begin{equation}
+	y(t)=\frac{1}{2\pi}\mathrm{Re}\left\{\int^{\infty}_{-\infty}{AU(\omega-\omega_0)e^{j(\omega{t}-\phi(\omega))}\,d\omega}\right\}.
+\end{equation}
+If $U(\omega)$ is narrowband---$\omega_m\ll\omega_0$ where $\omega_m$ is the maximum frequency of the baseband function $u(t)$---then the phase response $\phi$ can be linearized using a (first-order) Taylor series expansion about $\omega_0$,
+\begin{equation}
+	\begin{split}
+		\phi(\omega)&\approx\phi(\omega_0)+\left.\frac{d\phi}{d\omega}\right|_{\omega=\omega_0}(\omega-\omega_0)\\
+		&=\phi_0+{\phi_0}^\prime(\omega-\omega_0).
+	\end{split}
+\end{equation}
+We then make a change of variables $\xi=\omega-\omega_0$ to obtain
+\begin{equation}
+	\begin{split}
+		y(t)&\approx\frac{1}{2\pi}\mathrm{Re}\left\{\int^{\infty}_{-\infty}{AU(\omega-\omega_0)e^{j(\omega{t}-\phi_0-{\phi_0}^\prime(\omega-\omega_0))}\,d\omega}\right\}\\
+		&=\frac{A}{2\pi}\mathrm{Re}\left\{e^{j(\omega_0t-\phi_0)}\int^{\infty}_{-\infty}{AU(\xi)e^{j(t-{\phi_0}^\prime\xi)}\,d\xi}\right\}\\
+		&=A\mathrm{Re}\left\{u(t-{\phi_0}^\prime)e^{j(\omega_0t-\phi_0)}\right\}\\
+		&=Au(t-{\phi_0}^\prime)\cos{(\omega_0t-\phi_0)}.
+	\end{split}
+\end{equation}
+Given that the group delay is defined as
+\begin{equation}
+	\tau_g\equiv-\left.\frac{d\phi}{d\omega}\right|_{\omega=\omega_0}
+\end{equation}
+our output signal is
+\begin{equation}
+	y(t)\approx{Au(t-\tau_g)\cos{(\omega_0t-\phi_0)}}.
+\end{equation}
+The phase delay is defined as
+\begin{equation}
+	\tau_\phi\equiv-\frac{\phi}{\omega}.
+\end{equation}
+
+		\subsection{Conclusion}
+If we have a medium of length $l$ with propagation constant $\gamma=\alpha+j\beta$ then the system phase is $\phi=-\beta{l}$ so that
+\begin{equation}
+	\begin{split}
+		\tau_g(\omega)&=-\frac{d\phi}{d\omega}\\
+		&=l\frac{d\beta}{d\omega}\\
+		&=\frac{l}{v_g}.
+	\end{split}
+\end{equation}
 
 \end{document}
 
