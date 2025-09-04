@@ -113,7 +113,6 @@ The phase delay is defined as
 \begin{equation}
 	\tau_\phi\equiv-\frac{\phi}{\omega}.
 \end{equation}
-
 		\subsection{Conclusion}
 If we have a medium of length $l$ with propagation constant $\gamma=\alpha+j\beta$ then the system phase is $\phi=-\beta{l}$ so that
 \begin{equation}
@@ -123,6 +122,64 @@ If we have a medium of length $l$ with propagation constant $\gamma=\alpha+j\bet
 		&=\frac{l}{v_g}.
 	\end{split}
 \end{equation}
+
+	\section{Transmission Matrix}
+The transition matrix or \emph{ABCD} matrix allows cascading of network connections, and is thus a popular choice for representing networks in network analysis. The \emph{ABCD} matrix for a two-port network is defined as follows:
+\begin{equation}
+	\begin{bmatrix}
+		V_1\\
+		I_1
+	\end{bmatrix}=
+	\begin{bmatrix}
+		A&B\\
+		C&D
+	\end{bmatrix}
+	\begin{bmatrix}
+		V_2\\
+		I_2
+	\end{bmatrix}.
+\end{equation}
+In general, we may have the transition matrix between ports $i$ and $i+1$:
+\begin{equation}
+	\begin{bmatrix}
+		V_i\\
+		I_i
+	\end{bmatrix}=
+	\begin{bmatrix}
+		A_i&B_i\\
+		C_i&D_i
+	\end{bmatrix}
+	\begin{bmatrix}
+		V_{i+1}\\
+		I_{i+1}
+	\end{bmatrix}.
+\end{equation}
+And we may cascade the transition matrices between ports $i$, $i+1$ and $i+2$:
+\begin{equation}
+	\begin{bmatrix}
+		V_i\\
+		I_i
+	\end{bmatrix}=
+	\begin{bmatrix}
+		A_i&B_i\\
+		C_i&D_i
+	\end{bmatrix}
+	\begin{bmatrix}
+		A_{i+1}&B_{i+1}\\
+		C_{i+1}&D_{i+1}
+	\end{bmatrix}	
+	\begin{bmatrix}
+		V_{i+2}\\
+		I_{i+2}
+	\end{bmatrix}.
+\end{equation}
+
+	\section{Impedance Matching}
+As long as the load impedance has a positive real part, a matching network can be found.
+		\subsection{\emph{L} Network}
+The \emph{L}-section can be used as a matching network. It comes in two configurations: (1) a series reactive element X followed by a shunt reactive element B or (2) a shunt reactive element B followed by a series reactive element X. The reactive elements may be either inductors or capacitors. Configuration 1 is used the normalized load impedance is inside the $1+jx$ circle on the Smith chart and configuration 2 should be used if the normalized load impedance is outside of this circle. The element values of the matching network may be solved either algebraically or with the use of a Smith chart.
+		\subsection{Stub Tuning}
+A single stub either in series or in shunt (configuration) may be used to tune. A double-stub tuner circuit may also be used.
 
 \end{document}
 
