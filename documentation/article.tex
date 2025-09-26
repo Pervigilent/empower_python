@@ -7,7 +7,12 @@
 	\author{Stewart Nash}
 
 	\maketitle
+	
+	\section{Introduction}
+The purpose of this article is to provide a theoretical treatment of non-linear electromagnetics which can be used in custom electromagnetic simulation software. (Incidentally, this software can be used in filter design -- which was the original use case of this treatment.)
+	
 	\section{Transmission Lines}
+%TODO: Treat non-linear aspects of group velocity and group delay.
 		\subsection{Group Velocity}
 In a source-free, linear, isotropic, homogeneous region, Maxwell's curl equations in phasor form are
 \begin{align}
@@ -122,6 +127,49 @@ If we have a medium of length $l$ with propagation constant $\gamma=\alpha+j\bet
 		&=\frac{l}{v_g}.
 	\end{split}
 \end{equation}
+
+	\section{Media}
+In a dielectric material, instead of the electric field $\vec{E}$ we use the electric flux density $\vec{D}$ -- $\vec{D}$ may also be called the total displacement flux -- and instead of the magnetic field $\vec{H}$ we use the magnetic flux density $\vec{B}$. (Really, we use both the field and the flux density.) The flux densities are related to the fields by
+\begin{align}
+	\vec{D}&=\epsilon_0\vec{E}+\vec{P},\\
+	\vec{B}&=\mu_0\vec{H}+\mu_0\vec{M},
+\end{align}
+where $\vec{P}$ is the polarization density and $\vec{M}$ is the magnetization density. $\vec{P}$ may also be called the electric polarization or polarization and $\vec{M}$ may be called the magnetic polarization or magnetization. Let us call the electric polarization simply polarization and let us call the magnetic polarization simply magnetization. The electric polarization represents the (volumetric) density of permanent or induced electric dipole moments in a dielectric medium. The magnetization represents the permanent  or induced dipole moments in a dieletric medium. The magnetization represents the permanent or induced dipole moments in a magnetic material.
+
+In a linear, non-dispersive, homogeneous, isotropic dielectric medium, the polarization is
+\begin{equation}
+	\vec{P}=\epsilon_0\chi\vec{E}
+\end{equation}
+where $\chi$ or $\chi_e$ is the electric susceptibility. This gives us
+\begin{align}
+	\vec{D}&=\epsilon_0\vec{E}+\vec{P}=\epsilon_0(1+\chi)\vec{E}=\epsilon\vec{E},\\
+	\epsilon&=\epsilon^\prime-j\epsilon^{\prime\prime}=\epsilon_0(1+\chi)
+\end{align}
+where $\epsilon$ is known as the electric permittivity of the medium. If the medium is lossless then $\epsilon^{\prime\prime}=0$. Similarly, the magnetization is
+\begin{equation}
+	\vec{M}=\chi\vec{H}
+\end{equation}
+where $\chi$ or $\chi_m$ is the (volume) magnetic susceptibility -- note that $\chi_m$ and $\chi_e$ are different event though both are written here with $\chi$. We can now write the magnetic flux as
+\begin{align}
+	\vec{B}&=\mu_0\vec{H}\chi\vec{H}=\mu_0(1+\chi)\vec{H}=\mu\vec{H},\\
+	\mu&=\mu_0(1+\chi),
+\end{align}
+where $\mu$ is the magnetic permeability.
+
+	\section{Nonlinear Optics}
+
+(This document will only treat parametric interactions.)
+
+In a non-linear dielectric medium, the relationship between the polarization and electric field may be expanded in a Taylor series about $E=0$:
+\begin{equation}
+	P=\sum_{k=1}^N{\frac{1}{k!}a_iE^i}
+\end{equation}
+We can stop at order 3 ($N=3$) and use the following notation
+\begin{align}
+	1\cdot{a_1}&=\epsilon_0\chi\\
+	\frac{1}{2}a_2&=2d=\epsilon_0\chi^{(2)}\\
+	\frac{1}{6}a_3&=4\chi^{(3)}\,\mathrm{or}\,\frac{1}{6}a_3=\epsilon_0\chi^{(3)}
+\end{align}
 
 	\section{Transmission Matrix}
 The transition matrix or \emph{ABCD} matrix allows cascading of network connections, and is thus a popular choice for representing networks in network analysis. The \emph{ABCD} matrix for a two-port network is defined as follows:
