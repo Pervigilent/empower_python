@@ -1,0 +1,31 @@
+[project]
+name = "empower"
+version = "1.0.0"
+dependencies = [
+  "httpx",
+  "gidgethub[httpx]>4.0.0",
+  "django>2.1; os_name != 'nt'",
+  "django>2.0; os_name == 'nt'",
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Stewart Nash"},
+  {email = "pervigilent@gmail.com"},
+]
+maintainers = [
+  {name = "Stewart Nash", email = "pervigilent@gmail.com"}
+]
+description = "Electromagnetic simulation software."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E.*"]
+keywords = ["electromagnetics", "EM", "FEM", "FDTD", "MEEP"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Homepage = "https://github.com/Pervigilent/empower_python"
+Repository = "https://github.com/Pervigilent/empower_python.git"
+
