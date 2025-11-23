@@ -1,0 +1,57 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{xcolor}
+
+%\theoremstyle{definition}
+%\newtheorem{example}{Example}[section]
+
+% Custom command for editor
+\newcommand{\editor}[1]{\gdef\@editor{#1}}
+\newcommand{\printeditor}{%
+  \par\vspace{1em}
+  \textbf{Editor:} \@editor
+}
+\makeatletter
+
+\title{Mie Scattering and Absorption (Version 2)}
+
+\author{
+  Christian M\"atzler\\[6pt]
+  Institute of Applied Physics\\
+  University of Bern, Switzerland\\
+  \texttt{matzler@iap.unibe.ch}
+}
+
+\date{August 2002}
+
+\editor{Stewart Nash}
+
+\begin{document}
+
+\maketitle
+\printeditor
+
+\begin{abstract}
+A set of MATLAB Functions for Mie calculations (M\"atzler, 2002a) and for applications to microwave radiation in rain (M\"atzler, 2002b) has been improved and
+expanded by including magnetic and metal-like media and coated spheres. The appendix includes a discussion of the basic behaviour or the Riccati-Bessel and
+related Functions needed in the computations of Mie Coefficients. The applications of the Mie Functions are directed toward the study of radiative properties of precipitation. Functions have been developed to compute propagation parameters for freezing rain and melting graupel, assuming Marshall-Palmer drop-size distribution, including functions to compute the complex dielectric permittivities of ice and water. Other applications can be envisaged if the dielectric or refractive properties of the particles and their size distributions are known.
+\end{abstract}
+
+\section{Introduction}
+This report is an extension of Mie-scattering and -absorption programs (M\"atzler, 2002a) and applications to propagation, scattering and emission of microwave
+radiation in precipitation (M\"atzler, 2002b) written in the numeric computation and visualisation software, MATLAB (Math Works, 1992). Mie Theory is based on the
+formulation of Bohren and Huffman (1983), in short BH. There and here the assumed time variation of the fields is exp(-i!t), leading to positive imaginary parts
+of the refractive index for absorbing media. For corresponding equations, equation numbers refer to those in BH or to page numbers of BH. In addition, for absorption
+by the internal electrical and magnetic fields, see Section 3.6 of the present report. For descriptions of computational problems in the Mie calculations, see the notes
+on p. 126-129, in Appendices A and B of BH and in the Appendix of this report which includes a description of the relevant functions (Riccati-Bessel functions and
+combinations thereof) and of their numerical behaviour.\\
+Microwave interaction with precipitation mainly refers to Sauvageot (1992) and to M\"atzler (2002b), including references therein.\\
+Descriptions of the functions are given in Section 3, followed by some examples in Section 4.
+
+\section{Overview of changes with respect to Version 1}
+
+\end{document}

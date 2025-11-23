@@ -75,7 +75,7 @@ class MainWindow(tk.Tk):
 		
 		# Base Project Menu
 		self.project_menu = tk.Menu(self.menubar, tearoff=0)
-		self.project_menu.add_command(label='Insert Empower Design', command=self.generic_callback)
+		self.project_menu.add_command(label='Insert Empower Design', command=self.insert_empower_design)
 		self.project_menu.add_command(label='Insert Empower 3D Layout Design', command=self.generic_callback)
 		self.project_menu.add_command(label='Insert 3D Extractors Design', command=self.generic_callback)
 		self.project_menu.add_command(label='Insert 2D Extractors Design', command=self.generic_callback)
@@ -149,8 +149,8 @@ class MainWindow(tk.Tk):
 		self.empower_help_menu.add_command(label='About Nash Electronics Desktop...', command=self.generic_callback)
 		self.empower_menubar.add_cascade(label='Help', menu=self.empower_help_menu, underline=0)
 		
-		self.empower_reference_menu.add_command(label="Mie Scattering v1", command=lambda: self.open_reference("empower/help/empower/mie_v1/mie_scattering_v1.pdf"))
-		self.empower_reference_menu.add_command(label="Mie Scattering v2", command=lambda: self.open_reference("empower/help/empower/mie_v2/mie_scattering_v2.pdf"))
+		self.empower_reference_menu.add_command(label="Mie Scattering v1", command=lambda: self.open_reference("empower/help/empower/mie_v1/mie_scatter_v1.pdf"))
+		self.empower_reference_menu.add_command(label="Mie Scattering v2", command=lambda: self.open_reference("empower/help/empower/mie_v2/mie_scatter_v2.pdf"))
 
 		self.config(menu=self.menubar)
 
@@ -159,32 +159,17 @@ class MainWindow(tk.Tk):
 		
 	def switch_window_mode(self, mode):
 		if mode == WindowMode.BASE:
-			self.config(menu=self.menubar)
+		    if self.window_mode is not WindowMode.BASE
+		        self.window_mode = WindowMode.BASE
+			    self.config(menu=self.menubar)
 		elif mode == WindowMode.EMPOWER:
-			self.config(menu=self.empower_menubar)
+		    if self.window_mode is not WindowMode.EMPOWER
+		        self.window_mode = WindowMode.EMPOWER
+			    self.config(menu=self.empower_menubar)
 			
 	def insert_empower_design(self):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
 	
-	#import sys
-	#import subprocess
-
-	#def  open_reference(self, filename):
-	#	 if os.name == 'nt': # Windows
-	#		 os.startfile(filename)
-	#	 elif os.uname().sysname == 'Darwin': # MacOS
-	#		 os.system(f'open "{filename}"')
-	#	 else: # Linux
-	#		os.system(f'xdg-open "{filename}"')
-
-	#def open_reference(self, filename):
-	#if sys.platform.startswith('win'):  # Windows
-	#	 os.startfile(filename)
-	#elif sys.platform == 'darwin':  # macOS
-	#	 os.system(f'open "{filename}"')
-	#else:	# Linux and others
-	#	 os.system(f'xdg-open "{filename}"')
-
 	def open_reference(self, filename):
 		if os.name == 'nt':  # Windows
 			os.startfile(filename)
