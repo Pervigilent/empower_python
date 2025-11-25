@@ -51,8 +51,55 @@ respectively. The computation of these parameters has been the most challenging 
 high order. With MATLAB’s built-in double-precision Bessel functions, the computation of the Mie coefficients has so far worked well up to size parameters exceeding 10,000; the coefficients are given in BH on p.100:
 \begin{align}
 	a_n&=\frac{m^2j_n(mx)[xj_n(x)]'-\mu_1j_n(x)[mxj_n(mx)]'}{m^2j_n(mx)[xh_n^{(1)}(x)]'-\mu_1h_n^{(1)}(x)[mxj_n(mx)]'}\\
-	b_n&=\frac{\mu_1j_n(mx)[xj_n(x)]'-j_n(x)[mxj_n(mx)]'}{\mu_1j_n(mx)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}
+	b_n&=\frac{\mu_1j_n(mx)[xj_n(x)]'-j_n(x)[mxj_n(mx)]'}{\mu_1j_n(mx)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}\\
+	c_n&=\frac{\mu_1j_n(x)[xh_n^{(1)}(x)]'-\mu_1h_n^{(1)}(x)[xj_n(x)]'}{\mu_1j_n(mx)[xhh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}\\
+	d_n&=\frac{\mu_1mj_n(x)[xh_n^{(1)}(x)]'-\mu_1mh_n^{(1)}(x)[ xj_n(x)]'}{m j_n(mx)[xh_n^{(1)}(x)]'-\mu_1h_n^{(1)}(x)[mxj_n(mx)]'}
 \end{align}
+where m is the refractive index of the sphere relative to the ambient medium, $x=ka$ is the size parameter, $a$ the radius of the sphere and $k=2\pi/\lambda$ is the wave number and $\lambda$ the wavelength in the ambient medium. In deviation from BH, $\mu_1$ is the ratio of the magnetic permeability of the sphere to the magnetic permeability of the ambient medium (corresponding to $\mu_1/\mu$ in BH). The functions $j_n(z)$ and $h_n^{(1)}(z)=j_n(z)+iy_n(z)$ are spherical Bessel functions of order $n$ ($n=1,2,\ldots$) and of the given arguments, $z=x$ or $mx$, respectively, and primes mean derivatives with respect to the argument. The derivatives follow from the spherical Bessel functions themselves, namely
+\begin{equation}
+	\begin{split}
+		[zj_n(z)]'&=zj_{n-1}(z)-nj_n(z)\\
+		[zh_n^{(1)}(z)]'&=zh_{n-1}^{(1)}(z)-nh_n^{(1)}(z)
+	\end{split}
+\end{equation}
+For completeness, the following relationships between Bessel and spherical Bessel functions are given:
+\begin{align}
+	j_n(z)&=\sqrt{\frac{\pi}{2z}}J_{n+0.5}(z)\\
+	y_n(z)&=\sqrt{\frac{\pi}{2z}}Y_{n+0.5}(z)
+\end{align}
+Here, $J_\nu$ and $Y_\nu$ are Bessel functions of the first and second kind. For $n=0$ and $1$ the spherical Bessel functions are given (BH, p. 87) by
+\begin{equation}
+	\begin{split}
+		j0(z)&=\sin{z}/z\\
+		j1(z)&=\sin{z}/z^2-\cos{z}/z\\
+		y0(z)&=-\cos{z}/z\\
+		y1(z)&=-\cos{z}/z^2-\sin{z}/z
+	\end{split}
+\end{equation}
+and the recurrence formula
+\begin{equation}
+	f_{n-1}(z)+f_{n+1}(z)=\frac{2n+1}{z}f_n(z)
+\end{equation}
+where $f_n$ is any of the functions $j_n$ and $y_n$. Taylor-series expansions for small arguments of $j_n$ and $y_n$ are given on p. 130 of BH. The spherical Hankel functions are linear combinations of $j_n$ and $y_n$. Here, the first type is required
+\begin{equation}
+	h_n^{(1)}(z)=j_n(z)+iy_n(z)
+\end{equation}
+The following related functions are also used in Mie theory (although we try to avoid them here):
+\begin{equation}
+	\begin{split}
+		\psi_n(z)=zj_n(z)\\
+		\chi_n(z)=-zy_n(z)\\
+		\xi_n(z)=zh_n^{(1)}(z)
+	\end{split}
+\end{equation}
+Often $\mu_1=1$; then, (4.52-4.53) simplify to
+\begin{align}
+	a_n&=\frac{m^2j_n(mx)[xj_n(x)]'-j_n(x)[mxj_n(mx)]'}{m^2j_n(mx)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}\\
+	b_n&=\frac{j_n(mx)[xj_n(x)]'-j_n(x)[mxj_n(mx)]'}{j_n(mx)[xh_n^{(1)}( x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}\\
+	c_n&=\frac{j_n(x)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[xj_n(x)]'}{j_n(mx)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}\\
+	d_n&=\frac{mj_n(x)[xh_n^{(1)}(x)]'-mh_n^{(1)}(x)[xj_n(x)]'}{m^2j_n(mx)[xh_n^{(1)}(x)]'-h_n^{(1)}(x)[mxj_n(mx)]'}
+\end{align}
+The parameters used in radiative transfer depend on $a_n$ and $b_n$, but not on $c_n$ and $d_n$. The latter coefficients are needed when the electric field inside the sphere is of interest, e.g. to test the field penetration in the sphere, to study the distribution of heat sources or to compute absorption. The absorption efficiency $Q_{abs}$, however, can also be computed from the scattered radiation, Equations (3.25), (4.61-62) to be shown below.
 
 \end{document}
 
