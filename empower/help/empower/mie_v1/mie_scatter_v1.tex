@@ -141,8 +141,131 @@ Finally, the backscattering efficiency $Q_b$, applicable to monostatic radar, is
 
 \subsection{The scattered far field}
 Python functions: mie\_s12, mie\_pt, mie\_thetascan
-If the detailed shape of the angular scattering pattern is required, e.g. to get the phase matrix or phase function for radiative-transfer calculations (Chandrasekhar,
-1960), the scattering functions S1 and S2 are required. These functions describe the scattered field $\mathbf{E}_\mathrm{s}$. The scattered far field in spherical coordinates ($E_{\mathrm{s}\theta}$, $E_{\mathrm{s}\phi}$) for a unit-amplitude incident field (where the time variation $\exp{(-i{\omega}t)}$ has been omitted) is given by
+If the detailed shape of the angular scattering pattern is required, e.g. to get the phase matrix or phase function for radiative-transfer calculations (Chandrasekhar, 1960), the scattering functions $S_1$ and $S_2$ are required. These functions describe the scattered field $\mathbf{E}_\mathrm{s}$. The scattered far field in spherical coordinates ($E_{\mathrm{s}\theta}$, $E_{\mathrm{s}\phi}$) for a unit-amplitude incident field (where the time variation $\exp{(-i{\omega}t)}$ has been omitted) is given by
+\begin{align}
+	E_{s\theta}&=\frac{e^{ikr}}{-ikr}\cos{\phi}{\cdot}S_2(\cos{\theta})\\
+	E_{s\phi}&=\frac{e^{ikr}}{ikr}\sin{\phi}{\cdot}S_1(\cos{\theta})
+\end{align}
+with the scattering amplitudes $S_1$ and $S_2$
+\begin{align}
+	S_1(\cos{\theta})&=\sum_{n=1}^\infty{\frac{2n+1}{n(n+1)}(a_n\pi_n+b_n\tau_n)}\\
+	S_2(\cos{\theta})&=\sum_{n=1}^\infty{\frac{2n+1}{n(n+1)}(a_n\tau_n+b_n\pi_n)}
+\end{align}
+$E_{\mathrm{s}\theta}$ is the scattered far-field component in the scattering plane, defined by the incident and scattered directions, and $E_{\mathrm{s}\phi}$ is the orthogonal component. The angle $\phi$ is the angle between the incident electric field and the scattering plane. The functions $\pi_n(\cos{\theta})$ and $\tau_n(\cos{\theta})$ describe the angular scattering patterns of the spherical harmonics used to describe $S_1$ and $S_2$ and follow from the recurrence relations
+\begin{equation}
+	\begin{split}
+		\pi_n&=\frac{2n-1}{n-1}\cos{\theta}\cdot\pi_{n-1}-\frac{n}{n-1}\pi_{n-2}\\
+		\tau_n&=n\cos{\theta}\cdot\pi_n-(n+1)\pi_{n-1}
+	\end{split}
+\end{equation}
+starting with (Deirmendjian, 1969, p. 15)
+\begin{equation}
+	\begin{split}
+		\pi_0&=0\\
+		\pi_1&=1\\
+		\pi_2&=3\cos{\theta}\\
+		\tau_0&=0\\
+		\tau_1&=\cos{\theta}\\
+		\tau_2&=3\cos{2\theta}
+	\end{split}
+\end{equation}
+
+\subsection{The internal field}
+Python function: NONE (see mie\_esquare)
+The internal field $\mathbf{E}_1$ for an incident field with unit amplitude is given by
+\begin{equation}
+	\mathbf{E}_1=\sum_{n=1}^\infty{\frac{2n+1}{n(n+1)}\left(c_n\mathbf{M}_{o1n}^{(1)}-d_n\mathbf{N}_{e1n}^{(1)}\right)}
+\end{equation}
+where the vector-wave harmonic fields are given in spherical $(r,\theta,\phi)$ coordinates by
+\begin{align}
+	\mathbf{M}_{o1n}^{(1)}&=
+	\begin{pmatrix}
+		0\\
+		\cos{\phi}\cdot\pi_n(\cos{\theta})j_n(rmx)\\
+		-\sin{\phi}\cdot\tau_n(\cos{\theta})j_n(rmx)
+	\end{pmatrix}\\
+	\mathbf{N}_{e1n}^{(1)}&=
+	\begin{pmatrix}
+		n(n+1)\cos{\phi}\cdot\sin{\theta}\cdot\pi_n(\cos{\theta})\frac{j_n(rmx)}{rmx}\\
+		\cos{\phi}\cdot\tau_n(\cos{\theta})\frac{[rmxj_n(rmx)]'}{rmx}\\
+		-\sin{\phi}\cdot\pi_n(\cos{\theta})\frac{[rmxj_n(rmx)]'}{rmx}
+	\end{pmatrix}\\
+	\label{eq:harmonic_fields}
+\end{align}
+and the coordinate system is defined as for the scattered field. The vector-wave functions $\mathbf{N}$ and $\mathbf{M}$ are orthogonal with respect to integration over directions. Furthermore for different values of $n$, the $\mathbf{N}$ functions are orthogonal, too, and the same is true for the $\mathbf{M}$ functions.
+
+\subsection{Computation of $Q_\mathrm{abs}$, based on the internal field}
+Python functions: mie\_esquare, mie\_abs
+The absorption cross section of a particle with dielectric (i.e. Ohmic) losses is given by (Ishimaru, 1978, p. 17)
+\begin{equation}
+	\sigma_\mathrm{abs}=k\epsilon''\int_V{|\mathbf{E}_1|^2\,dV}	
+\end{equation}
+where $\epsilon''$ is the imaginary part of the relative dielectric constant of the particle (here with respect to the ambient medium). Thanks to the orthogonality of the spherical vector-wave functions this integral becomes in spherical coordinates
+\begin{equation}
+	\sigma_\mathrm{abs}=k\epsilon''\pi\sum_{n=1}^\infty{\int_{-1}^{+1}{d(\cos{\theta})}\int_0^a{r^2\,dr}\left(|c_n|^2(m_\theta+m_\phi)+|d_n|^2(n_r+n_\theta+n_\phi)\right)}
+	\label{eq:absorption_cross_section}
+\end{equation}
+and the integration over azimuth $\phi$ has already been performed, leading to the factor $\pi$. The functions in the integrand are absolute-square values of the series terms of the components of the vector-waves (\ref{eq:harmonic_fields})
+\begin{equation}
+	\begin{split}
+		m_\theta&=g_n\pi_n^2(\cos{\theta})\cdot|j_n(z)|^2\\
+		m_\phi&=g_n\tau_n^2(\cos{\theta})\cdot|j_n(z)|^2\\
+		n_r&=g_n\sin^2{\theta}\cdot\pi_n^2(\cos{\theta})\left|\frac{j_n(z)}{z}\right|^2\\
+		n_\theta&=g_n\tau_n^2(\cos{\theta})\left|\frac{(zj_n(z))'}{z}\right|^2\\
+		n_\phi&=g_n\pi_n^2(\cos{\theta})\left|\frac{(zj_n(z))'}{z}\right|^2		
+	\end{split}
+\end{equation}
+Here $z=mrk$, and $g_n$ stands for
+\begin{equation}
+	g_n\left(\frac{2n+1}{n(n+1)}\right)^2
+\end{equation}
+for the integrals over $\cos{\theta}$, analytic solutions can be obtained. First, from BH we find
+\begin{equation}
+	\int_{-1}^{-1}{(\pi_n^2(\cos{theta})+(\tau_n^2(\cos{theta}))\,d(\cos{\theta})}=\frac{2n^2(n+1)^2}{2n+1}
+\end{equation}
+and second, from (4.46) in BH and Equation 8.14.13 of Abramowitz and Stegun
+(1965), we get
+\begin{equation}
+	\begin{split}
+		\int_{-1}^{-1}{(\sin^2{\theta}\cdot\pi_n^2(\cos{\theta}))\,d(\cos{\theta})}
+		&=\int_{-1}^{-1}{(P_n^1(\cos{\theta}))^2\,d(\cos{\theta})}\\
+		&=\frac{2(n+1)}{2n+1}
+	\end{split}
+\end{equation}
+leading to the two parts (\ref{eq:angular_component_m}) and (\ref{eq:angular_component_n}) of the angular integral in (\ref{eq:absorption_cross_section})
+\begin{equation}
+	\begin{split}
+		m_n&=\int_{-1}^1{(m_\theta+m_\phi)\,d(\cos{\theta})}\\
+		&=2(2n+1)|j_n(z)|^2
+	\end{split}
+	\label{eq:angular_component_m}
+\end{equation}
+\begin{equation}
+	\begin{split}
+		n_n&=\int_{-1}^1{(n_r+n_\theta+n_\phi)\,d(\cos{\theta})}\\
+		&=2n(2n+1)\left\{(n+1)\left|\frac{j_n(z)}{z}\right|^2+\left|\frac{(zj_n(z))'}{z}\right|^2\right\}
+	\end{split}
+	\label{eq:angular_component_n}
+\end{equation}
+Now, the absorption cross section follows from integration over the radial distance $r$ inside the sphere up to the sphere radius $a$:
+\begin{equation}
+	\sigma_\mathrm{abs}=k\epsilon''\pi\sum_{n=1}^\infty{\int_0^a{\left(m_n|c_n|^2+n_n|d_n|^2\right){\cdot}r^2\,dr}}
+\end{equation}
+The integrand contains the radial dependence of the absolute-square electric field $\langle|\mathbf{E}|^2\rangle$ averaged over spherical shells (all $\theta$ and $\phi$, constant $r$):
+\begin{equation}
+	\langle|\mathbf{E}|^2\rangle=\frac{1}{4}\sum_{n=1}^\infty{\left(m_n|c_n|^2+n_n|d_n|^2\right)}
+	\label{eq:average_electric_field}
+\end{equation}
+and in terms of this quantity, the absorption efficiency becomes
+\begin{equation}
+	Q_\mathrm{abs}=\frac{4\epsilon''}{x^2}\int_0^x{\langle|\mathbf{E}|^2\rangle{x'}^2\,dx'}
+	\label{eq:absorption_efficiency}
+\end{equation}
+where $x'=rk=z/m$. Note that (\ref{eq:average_electric_field}) is dimensionless because of the unit-amplitude incident field; In case of Rayleigh scattering ($x{\ll}1$) the internal field is constant, and the corresponding squared-field ratio (\ref{eq:average_electric_field}) is given by
+\begin{equation}
+	\frac{9}{|m^2+2|^2}
+\end{equation}
+This quantity can be used to test the accuracy of the function, mie\_esquare, for small size parameters. In addition, Equation~\ref{eq:absorption_efficiency} can be used to test the accuracy of the computation of $Q_\mathrm{abs}$ from the difference, $Q_\mathrm{ext}-Q_\mathrm{sca}$ (\ref{eq:extinction_theorem}). Finally, it should be remembered that all infinite series can be terminated after $n_\mathrm{max}$ terms.
 
 \end{document}
 
