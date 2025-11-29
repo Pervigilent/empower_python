@@ -9,13 +9,27 @@
 %\theoremstyle{definition}
 %\newtheorem{example}{Example}[section]
 
-% Custom command for editor
-\newcommand{\editor}[1]{\gdef\@editor{#1}}
-\newcommand{\printeditor}{%
-  \par\vspace{1em}
-  \textbf{Editor:} \@editor
-}
+% Custom command for editor with name and optional email
 \makeatletter
+\newcommand{\editor}[2][]{%
+  % #1 = email (optional), #2 = editor name
+  \gdef\@editorname{#2}%
+  \gdef\@editoremail{#1}%
+}
+
+\newcommand{\printeditor}{%
+  \par\vspace{1em}%
+  \begin{center}
+    \textbf{Editor}\\[0.5em]
+    {\@editorname}%
+    \ifx\@editoremail\@empty
+      % do nothing if email is empty
+    \else
+      \\[0.3em] {\small \texttt{\@editoremail}}%
+    \fi
+  \end{center}%
+}
+\makeatother
 
 \title{Mie Scattering and Absorption (Version 1)}
 
@@ -28,7 +42,7 @@
 
 \date{June 2002}
 
-\editor{Stewart Nash}
+\editor[pervigilent@gmail.com]{Stewart Nash}
 
 \begin{document}
 
@@ -726,6 +740,10 @@ def mie_abs(m, x):
 \subsection{Large refractive index}
 
 \section{Conclusion, and outlook to further developments}
+The presented software represents the first major programming effort by the author in MATLAB [translated to Python by the editor]; therefore the programs may not yet be optimum. Nevertheless, no severe problems have been encountered so far. Indeed, MATLAB appears to be a
+very efficient and accurate computing language suitable for the present application. \footnote{\footnotesize
+The concluding section of the article is largely discursive and does not present substantive technical content. It primarily consists of speculative commentary on potential alternative implementations, which, while perhaps of peripheral interest, do not materially advance the methodological or analytical contributions of the work. This digressive discussion, which departs from the principal technical narrative, highlights the author’s uncertainty regarding the implementation choices and reflects a lack of rigor in the selection of material appropriate for a formal conclusion. Consequently, the passage contributes little to the scientific merit of the article and serves more as an illustration of exploratory reflection than of validated technical insight.
+} However, further tests are required to get a more complete assessment of the Mie functions. Improvements are required to allow Mie computations for metal-like spheres over a larger $x$ range than is presently possible. Concerning further developments, the extension to situations with $\mu_1\neq1$ is straightforward. Furthermore, it would be nice to make better use of the existing MATLAB visualisation tools. Finally, an extension to include scattering on coated spheres (BH, Section 8.1) and on other particles should be done as well.
 
 \end{document}
 

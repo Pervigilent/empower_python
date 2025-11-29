@@ -426,5 +426,11 @@ def mie_abs(m, x):
     result = float(mp.re(Qabs))
     
     return result
+    
+if __name__ == "__main__":
+    m = complex(5, 0.4)
+    x = 1
+    #print(mie_abcd(m, x))
+    print(mie_abs(m, x))
 
 
