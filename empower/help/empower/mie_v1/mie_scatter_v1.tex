@@ -267,5 +267,465 @@ where $x'=rk=z/m$. Note that (\ref{eq:average_electric_field}) is dimensionless 
 \end{equation}
 This quantity can be used to test the accuracy of the function, mie\_esquare, for small size parameters. In addition, Equation~\ref{eq:absorption_efficiency} can be used to test the accuracy of the computation of $Q_\mathrm{abs}$ from the difference, $Q_\mathrm{ext}-Q_\mathrm{sca}$ (\ref{eq:extinction_theorem}). Finally, it should be remembered that all infinite series can be terminated after $n_\mathrm{max}$ terms.
 
+\section{The Python Programs}
+
+\subsection{Commments}
+\subsubsection{Restrictions}
+1. The present restrictions are situations with $\mu_1=1$; this means that the permittivity of the sphere relative to the ambient medium is given by $\epsilon=m^2$.\\
+2. There is a maximum $x$ value for stable and correct computation of Mie scattering. For a small or moderate imaginary refractive index $m''$, the maximum size parameter ranges somewhere between $10^4$ and $10^5$, however, for $m''\gg1$, the maximum size parameter is strongly diminished.
+\subsubsection{Computation of Bessel Functions}
+The ordinary Bessel Functions $J_\nu(z)$ and $Y_\nu(z)$ are standard functions in MATLAB. The spherical Bessel Functions used here follow from (4.9-10) of BH.
+\subsubsection{Computation of angular functions}
+The angular functions, $\pi_n$ and $\tau_n$, are computed from the recurrence relations (4.47) of BH with the initial functions given for $n=1$ and $2$.
+\subsubsection{Optimisation strategy}
+The programs were optimised rather with respect to computation speed than memory space; all required function values are computed only once and then stored for further use in vectors of dimension $n_\mathrm{max}$.
+
+\subsection{The Function Mie\_abcd}
+The following text lists the basic program to compute the \textbf{Mie Coefficients} $a_n$, $b_n$, $c_n$, $d_n$ and to produce a matrix of $n_\mathrm{max}$ column vectors $[[an] [bn] [cn] [dn]]$:
+
+\begin{verbatim}
+import mpmath as mp
+
+def mie_abcd(m, x):
+    """
+    Computes Mie coefficients a_n, b_n, c_n, d_n using mpmath.
+    Translation of MATLAB code by C. Mätzler (2002).
+    """
+
+    # Maximum order
+    nmax = round(2 + x + 4 * x**(1/3))
+    n = [i for i in range(1, nmax + 1)]
+    nu = [i + 0.5 for i in n]
+
+    z = m * x
+    m2 = m * m
+
+    # Helper scaling factors
+    sqx = mp.sqrt(0.5 * mp.pi / x)
+    sqz = mp.sqrt(0.5 * mp.pi / z)
+
+    # Riccati–Bessel functions (element wise)
+    bx = [mp.besselj(v, x) * sqx for v in nu]
+    bz = [mp.besselj(v, z) * sqz for v in nu]
+    yx = [mp.bessely(v, x) * sqx for v in nu]
+    hx = [bx[i] + 1j*yx[i] for i in range(nmax)]
+
+    # Shifted values
+    b1x = [mp.sin(x)/x] + bx[:nmax-1]
+    b1z = [mp.sin(z)/z] + bz[:nmax-1]
+    y1x = [-mp.cos(x)/x] + yx[:nmax-1]
+    h1x = [b1x[i] + 1j*y1x[i] for i in range(nmax)]
+
+    # Axial functions
+    ax  = [x * b1x[i] - n[i] * bx[i] for i in range(nmax)]
+    az  = [z * b1z[i] - n[i] * bz[i] for i in range(nmax)]
+    ahx = [x * h1x[i] - n[i] * hx[i] for i in range(nmax)]
+
+    # Mie coefficients
+    an = [(m2*bz[i]*ax[i] - bx[i]*az[i])/(m2*bz[i]*ahx[i] - hx[i]*az[i]) for i in range(nmax)]
+    bn = [(bz[i]*ax[i] - bx[i]*az[i])/(bz[i]*ahx[i] - hx[i]*az[i]) for i in range(nmax)]
+    cn = [(bx[i]*ahx[i] - hx[i]*ax[i])/(bz[i]*ahx[i] - hx[i]*az[i]) for i in range(nmax)]
+    dn = [m*(bx[i]*ahx[i] - hx[i]*ax[i])/(m2*bz[i]*ahx[i] - hx[i]*az[i]) for i in range(nmax)]
+
+    # Output as list of lists (same structure: 4 × nmax)
+    return [an, bn, cn, dn]	
+\end{verbatim}
+
+\subsection{The Function Mie}
+The following text lists the Program to compute the \textbf{Mie Efficiencies}:
+\begin{verbatim}
+def mie(m, x):
+    """
+    Python/Numpy version of the MATLAB function:
+    [real(m) imag(m) x qext qsca qabs qb asy qratio]
+    """
+    # If x == 0: singularity case (same as MATLAB)
+    if x == 0:
+        return np.array([m.real, m.imag, 0, 0, 0, 0, 0, 0, 1.5], dtype=float)
+    # Normal case (x > 0)
+    nmax = int(round(2 + x + 4 * x ** (1/3)))
+    n = np.arange(1, nmax + 1)
+    cn = 2 * n + 1
+    c1n = n * (n + 2) / (n + 1)
+    c2n = cn / (n * (n + 1))
+    x2 = x * x
+
+    # Retrieve a_n and b_n coefficients
+    f = mie_abcd(m, x)  # expects shape (2, nmax)
+    an = f[0, :]
+    bn = f[1, :]
+
+    # Real/imaginary parts
+    anp = an.real
+    anpp = an.imag
+    bnp = bn.real
+    bnpp = bn.imag
+
+    # g1 shifted index family for asymmetry parameter
+    g1 = np.zeros((4, nmax))
+    g1[0, :-1] = anp[1:]
+    g1[1, :-1] = anpp[1:]
+    g1[2, :-1] = bnp[1:]
+    g1[3, :-1] = bnpp[1:]
+
+    # Efficiency calculations
+    dn = cn * (anp + bnp)
+    qext = 2 * np.sum(dn) / x2
+
+    en = cn * (anp**2 + anpp**2 + bnp**2 + bnpp**2)
+    qsca = 2 * np.sum(en) / x2
+
+    qabs = qext - qsca
+
+    # Backscattering
+    fn = (an - bn) * cn
+    gn = (-1)**n
+    back = np.sum(fn * gn)
+    qb = (back * np.conj(back)).real / x2
+
+    # Asymmetry parameter
+    asy1 = c1n * (anp * g1[0] + anpp * g1[1] + bnp * g1[2] + bnpp * g1[3])
+    asy2 = c2n * (anp * bnp + anpp * bnpp)
+    asy = (4 / x2) * np.sum(asy1 + asy2) / qsca
+
+    qratio = qb / qsca
+
+    return np.array([m.real, m.imag, x, qext, qsca, qabs, qb, asy, qratio], dtype=float)
+\end{verbatim}
+
+\subsection{The Function Mie\_S12}
+The following text lists the program to compute the two \textbf{complex scattering amplitudes} $S_1$ and $S_2$:
+\begin{verbatim}
+def mie_s12(m, x, u):
+    """
+    Compute Mie scattering functions S1 and S2.
+    
+    Parameters:
+        m : complex
+            Complex refractive index ratio
+        x : float
+            Size parameter (k0 * a)
+        u : float or array-like
+            Cosine of scattering angle (cos(theta))
+    
+    Returns:
+        numpy.ndarray
+            2 x N array, with S1 and S2 scattering amplitudes
+    """
+
+    # Ensure u is array for vectorized operations
+    u = np.atleast_1d(u)
+
+    # Order limit
+    nmax = int(round(2 + x + 4 * x ** (1/3)))
+
+    # Mie coefficients (shape: (2, nmax))
+    abcd = Mie_abcd(m, x)
+    an = abcd[0, :]   # shape (nmax,)
+    bn = abcd[1, :]
+
+    # Angular functions \pi_n and \tau_n (shape: (2, nmax, len(u)))
+    pt = Mie_pt(u, nmax)
+    pin = pt[0, :, :]  # \pi_n(u)
+    tin = pt[1, :, :]  # \tau_n(u)
+
+    # n = 1...nmax
+    n = np.arange(1, nmax + 1)
+    n2 = (2 * n + 1) / (n * (n + 1))
+
+    # Apply normalization factor to angular functions
+    pin = pin * n2[:, None]
+    tin = tin * n2[:, None]
+
+    # Compute S1 and S2 via vectorized summation over n
+    S1 = np.sum(an[:, None] * pin + bn[:, None] * tin, axis=0)
+    S2 = np.sum(an[:, None] * tin + bn[:, None] * pin, axis=0)
+
+    return np.vstack((S1, S2))
+\end{verbatim}
+
+\subsection{The Function Mie\_xscan}
+The following text lists the program to compute the a matrix of \textbf{Mie efficiencies} and to \textbf{plot} them as a function of x:
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def mie_xscan(m, nsteps, dx):
+    """
+    Compute and plot Mie efficiencies for a range of size parameters.
+    
+    Parameters:
+        m : complex
+            Complex refractive index ratio
+        nsteps : int
+            Number of x increments
+        dx : float
+            Step size in x (size parameter)
+    
+    Returns:
+        numpy.ndarray
+            Array of results, each row:
+            [real(m), imag(m), x, qext, qsca, qabs, qb, asy, qratio]
+    """
+
+    # Create array of x values starting at 0
+    x = np.arange(nsteps) * dx  # shape: (nsteps,)
+
+    # Allocate result array
+    results = np.zeros((nsteps, 9))
+
+    # Compute Mie results at each x
+    for j in range(nsteps):
+        results[j, :] = Mie(m, x[j])
+
+    # Plot results (columns 3→8 correspond to qext...qratio)
+    plt.figure()
+    plt.plot(results[:, 2], results[:, 3:9])
+    plt.legend(['Qext', 'Qsca', 'Qabs', 'Qb', '<cos\theta>', 'Qb/Qsca'])
+    plt.title(f"Mie Efficiencies, m = {m.real:.3g} + {m.imag:.3g}i")
+    plt.xlabel("Size parameter x")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return results
+\end{verbatim}
+
+\subsection{The Function Mie\_thetascan}
+The following text lists the program to compute the matrix of \textbf{Mie scattering intensities} $|S_1|^2$ and $|S_2|^2$ as a function of $u=\cos{\theta}$, and to display the result as a polar diagram of $\theta$ with $|S_1|^2$ in the upper half circle $(0<\theta<\pi)$ and $|S_2|^2$ in the lower half circle $(\pi<\theta<2\pi)$. Both functions are symmetric with respect to both half circles:
+\begin{verbatim}
+def mie_tetascan(m, x, nsteps):
+    """
+    Computation and polar plot of Mie Power Scattering function for:
+      m = complex refractive-index ratio
+      x = size parameter
+      nsteps = number of angular steps
+    Translation from MATLAB code by C. Mätzler (2002)
+    """
+
+    m1 = np.real(m)
+    m2 = np.imag(m)
+
+    # Create theta array
+    teta = np.linspace(0, np.pi, nsteps)
+    
+    SL = np.zeros(nsteps)
+    SR = np.zeros(nsteps)
+    
+    for j in range(nsteps):
+        u = np.cos(teta[j])
+        a = mie_s12(m, x, u)
+        SL[j] = np.real(a[0] * np.conj(a[0]))
+        SR[j] = np.real(a[1] * np.conj(a[1]))
+    
+    # Mirror data like MATLAB code
+    y_theta = np.concatenate((teta, teta + np.pi))
+    y_vals = np.concatenate((SL, SR[::-1]))
+
+    y = np.column_stack((y_theta, y_vals))
+
+    # Polar Plot
+    plt.figure()
+    ax = plt.subplot(111, projection='polar')
+    ax.plot(y[:, 0], y[:, 1])
+    ax.set_title(f"Mie angular scattering: m={m1}+{m2}i, x={x}")
+    ax.set_xlabel("Scattering Angle")
+    plt.show()
+
+    return y
+\end{verbatim}
+
+\subsection{The Function Mie\_pt}
+The following text lists the program to compute a matrix of $\pi_n$ and $\tau_n$ functions for $n=1$ to $n_\mathrm{max}$:
+\begin{verbatim}
+import numpy as np
+
+def mie_pt(u, nmax):
+    """
+    Compute the angular functions pi_n and tau_n used in Mie theory.
+    Translated from MATLAB version by C. Mätzler (2002)
+    
+    Parameters:
+        u : float  (cos(theta), must be in [-1, 1])
+        nmax : int
+        
+    Returns:
+        result : ndarray shape (2, nmax)
+                 result[0, :] = pi_n
+                 result[1, :] = tau_n
+    """
+
+    p = np.zeros(nmax)
+    t = np.zeros(nmax)
+
+    # Initial conditions
+    p[0] = 1.0
+    t[0] = u
+    if nmax > 1:
+        p[1] = 3 * u
+        t[1] = 3 * np.cos(2 * np.arccos(u))
+
+    # Recurrence
+    for n1 in range(3, nmax + 1):
+        n = n1 - 1  # MATLAB indexing shift
+        p1 = (2*n1 - 1)/(n1 - 1) * p[n - 1] * u
+        p2 = n1/(n1 - 1) * p[n - 2]
+        p[n] = p1 - p2
+
+        t1 = n1 * u * p[n]
+        t2 = (n1 + 1) * p[n - 1]
+        t[n] = t1 - t2
+
+    return np.vstack((p, t))
+\end{verbatim}
+
+\subsection{The Function Mie\_esquare}
+The following text lists the program to \textbf{compute} and \textbf{plot} the $(\theta, \phi)$ averaged \textbf{absolute-square E-field} as a function of $x'=rk$ (for $r<0<a$):
+\begin{verbatim}
+mp.mp.dps = 50  # high precision recommended for Mie series computations
+
+def mie_esquare(m, x, nj:
+    """
+    Mean-absolute-square internal electric field inside a sphere (Mie theory)
+    Compute and plot mean-square internal electric field |E|^2 inside a sphere.
+    
+    Parameters:
+        m  : complex refractive index ratio
+        x  : size parameter (k0 * radius)
+        nj : number of radial sample points
+    
+    Returns:
+        een : numpy array of |E|^2 samples, length nj+1
+    MATLAB Source: C. Mätzler (2002)
+    """
+
+    # Determine max series term
+    nmax = int(round(2 + x + 4 * x**(1/3)))
+    n = np.arange(1, nmax + 1)
+    nu = n + 0.5
+
+    m1 = mp.re(m)
+    m2 = mp.im(m)
+
+    # Fetch cn & dn from Mie coefficients
+    abcd = mie_abcd(m, x)  # returns NumPy or Python lists convertible to mp
+    cn = np.array(abcd[2, :], dtype=object)
+    dn = np.array(abcd[3, :], dtype=object)
+
+    cn2 = np.abs(cn)**2
+    dn2 = np.abs(dn)**2
+
+    dx = x / nj
+    en = np.zeros(nj, dtype=float)
+
+    # Loop over radial steps
+    for j in range(1, nj + 1):
+        xj = dx * j
+        z = m * xj  # complex
+
+        sqz = mp.sqrt(0.5 * mp.pi / z)
+
+        # spherical j_n(z) = sqrt(pi/(2*z)) * J_{n+1/2}(z)
+        bz = np.array([mp.besselj(nu[k], z) * sqz for k in range(len(n))], dtype=object)
+        bz2 = np.abs(bz)**2
+
+        # j_0(z) = sin(z)/z
+        b1z = np.zeros_like(bz, dtype=object)
+        b1z[0] = mp.sin(z) / z
+        b1z[1:] = bz[:-1]
+
+        az = b1z - (n * bz) / z
+        az2 = np.abs(az)**2
+
+        z2 = np.abs(z)**2
+        n1 = n * (n + 1)
+        n2 = 2 * (2 * n + 1)
+
+        mn = np.real(bz2 * n2)
+        nn1 = az2
+        nn2 = bz2 * n1 / z2
+        nn = n2 * np.real(nn1 + nn2)
+
+        en[j - 1] = 0.25 * (cn2 @ mn + dn2 @ nn)
+
+    # Build radial coordinate array
+    xxj = np.linspace(0, x, nj + 1)
+    een = np.concatenate(([en[0]], en))
+
+    # Plot results
+    plt.figure()
+    plt.plot(xxj, een)
+    plt.title(f'Squared |E|² inside Sphere — m={m1}+{m2}i, x={x}')
+    plt.xlabel('r k')
+    plt.ylabel('|E|²')
+    plt.grid(True)
+    plt.legend(['Radial Dependence of (abs(E))²'])
+    plt.show()
+
+    return een
+\end{verbatim}
+
+\subsection{The Function Mie\_abs}
+The following text lists the program to compute the \textbf{absorption efficiency}, based on Equation~\ref{eq:absorption_efficiency}:
+\begin{verbatim}
+import numpy as np
+import mpmath as mp
+
+def mie_abs(m, x):
+    """
+    Absorption efficiency Qabs for a sphere using Mie theory.
+    Translation of MATLAB code by C. Mätzler (2002).
+
+    Parameters
+    ----------
+    m : complex
+        Refractive index (relative)
+    x : float
+        Size parameter
+
+    Returns
+    -------
+    Qabs : float
+        Absorption efficiency
+    """
+
+    # Determine number of internal field samples
+    nj = 5 * round(2 + x + 4 * x**(1/3)) + 160
+
+    e2 = mp.im(m * m)
+    dx = x / nj
+    x2 = x * x
+
+    # Radial positions: 0, dx, 2dx, ..., x
+    xj = np.linspace(0, x, nj + 1)
+
+    # Compute |E|^2 internal field profile
+    en = mie_esquare(m, x, nj)  # assumes Mie_Esquare internally calls Mie_abcd
+
+    # End-term correction
+    en1 = 0.5 * en[-1] * x2
+
+    # Compute radial weighted field: en(r) * r^2 - correction
+    enx = en * (xj * xj) - en1
+
+    # Trapezoidal radial integration
+    inte = dx * np.sum(enx)
+
+    # Absorption Efficiency
+    Qabs = 4 * e2 * inte / x2
+
+    return float(mp.re(Qabs))
+\end{verbatim}
+
+\section{Examples and Tests}
+
+\subsection{The situation of $x=1, m=5+0.4i$}
+
+\subsection{Large size parameters}
+
+\subsection{Large refractive index}
+
+\section{Conclusion, and outlook to further developments}
+
 \end{document}
 
