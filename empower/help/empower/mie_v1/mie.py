@@ -2,6 +2,8 @@ import mpmath as mp
 import numpy as np
 import matplotlib.pyplot as plt
 
+SHOW_PLOTS = False
+
 mp.mp.dps = 50  # high precision recommended for Mie series computations
 
 def mie_abcd(m, x):
@@ -79,7 +81,10 @@ def mie(m, x):
     x2 = x * x
 
     # Retrieve a_n and b_n coefficients
-    f = mie_abcd(m, x)  # expects shape (2, nmax)
+    f = mie_abcd(m, x)  # expects shape (2, nmax)  
+    f = np.array(f, dtype=object)
+    f = f.astype(complex)
+
     an = f[0, :]
     bn = f[1, :]
 
@@ -184,7 +189,7 @@ def mie_xscan(m, nsteps, dx):
 
     # Compute Mie results at each x
     for j in range(nsteps):
-        results[j, :] = Mie(m, x[j])
+        results[j, :] = mie(m, x[j])
 
     # Plot results (columns 3→8 correspond to qext...qratio)
     plt.figure()
@@ -322,8 +327,10 @@ def mie_esquare(m, x, nj):
 
     # Fetch cn & dn from Mie coefficients
     abcd = mie_abcd(m, x)  # returns NumPy or Python lists convertible to mp
-    cn = np.array(abcd[2, :], dtype=object)
-    dn = np.array(abcd[3, :], dtype=object)
+    #cn = np.array(abcd[2, :], dtype=object)
+    #dn = np.array(abcd[3, :], dtype=object)    
+    cn = np.array(abcd, dtype=object)[2, :]
+    dn = np.array(abcd, dtype=object)[3, :]
 
     cn2 = np.abs(cn)**2
     dn2 = np.abs(dn)**2
@@ -365,21 +372,22 @@ def mie_esquare(m, x, nj):
     xxj = np.linspace(0, x, nj + 1)
     een = np.concatenate(([en[0]], en))
 
-    # Plot results
-    plt.figure()
-    plt.plot(xxj, een)
-    plt.title(f'Squared |E|² inside Sphere — m={m1}+{m2}i, x={x}')
-    plt.xlabel('r k')
-    plt.ylabel('|E|²')
-    plt.grid(True)
-    plt.legend(['Radial Dependence of (abs(E))²'])
-    plt.show()
+    if SHOW_PLOTS:
+        # Plot results
+        plt.figure()
+        plt.plot(xxj, een)
+        plt.title(
+            f"Squared |E|² inside Sphere — "
+            f"m={float(m1):.4g}+{float(m2):.4g}i, x={float(x):.4g}"
+        )
+        plt.xlabel('r k')
+        plt.ylabel('|E|²')
+        plt.grid(True)
+        plt.legend(['Radial Dependence of (abs(E))²'])
+        plt.show()  
 
     result = een
     return result
-
-import numpy as np
-import mpmath as mp
 
 def mie_abs(m, x):
     """
@@ -416,10 +424,11 @@ def mie_abs(m, x):
     en1 = 0.5 * en[-1] * x2
 
     # Compute radial weighted field: en(r) * r^2 - correction
-    enx = en * (xj * xj) - en1
+    enx = en * (xj * xj)
+    enx = np.sum(enx) -  en1
 
     # Trapezoidal radial integration
-    inte = dx * np.sum(enx)
+    inte = dx * enx
 
     # Absorption Efficiency
     Qabs = 4 * e2 * inte / x2
@@ -432,5 +441,6 @@ if __name__ == "__main__":
     x = 1
     #print(mie_abcd(m, x))
     print(mie_abs(m, x))
+    mie_xscan(m, 201, 0.01)
 
 
