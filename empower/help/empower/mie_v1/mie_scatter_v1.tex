@@ -735,9 +735,36 @@ def mie_abs(m, x):
 
 \subsection{The situation of $x=1, m=5+0.4i$}
 
+The execution of the command line
+\begin{verbatim}
+    m = 5 + 0.4j
+    x = 1
+    mie_abcd(m, x)
+\end{verbatim}
+leads to column vectors \_
+
+To test the absorption efficiency, call mie\_abs:
+\begin{verbatim}
+mie_abs(m, x)
+1.0999
+\end{verbatim}
+to confirm the result of mie(m, x), s. above.\\
+
+Mie Efficiencies are plotted versus $x$, $(0{\leq}x\leq2)$, by mie\_xscan(m, 201, 0.01) in Fig. 1. Two absorption peaks can be observed near x=0.6 and 0.85 and a rapid variation of the scattering behaviour between the forward and backward hemisphere. To plot the angular dependence of the scattered power in the two polarizations, the function mie\_thetascan(m, x, 201), for $x=1$, is used to provide Figure 2. Furthermore, the absolute-square internal field is plotted versus the radial distance in Figure 3 by calling mie\_esquare (previously automatically called by mie\_abs).\\
+
+To test the behavior at low $x$ values, Figure 1 indicates that the ratio Qb/Qsca approaches 1.5 near $x=0$. This is exactly the value obtained for Rayleigh scattering (Ishimaru, 1978). For $x=0.1$ Equation (9) gives absolute square internal field values between 0.0130 in the sphere center and 0.0137 at the sphere surface, and for decreasing x the absolute square internal field of 0.0122 of the Rayleigh Expression (11) is reached at x=0.01. This means that the validity of the Rayleigh Approximation is quite limited, especially for large values of m.
+
 \subsection{Large size parameters}
 
+For $x\gg1$, a large number of spherical harmonics have to be computed. Here we consider the example of $m=2+0.01i$. Figure 4 shows the Mie Efficiencies over the x from 0 to 25. As a result of the Extinction Paradox (van de Hulst, 1957), Qext approaches the value 2 for very large x. The computed values are slightly higher in Figure 4. For increasing x, Qext decreases to 2.09 at $x=100$, to 2.01 at $x=2800$ and to Qext=2.0014 for $x=40,000$. The program still works at $x=70,000$ (Qext = 2.0012), but for $x>80,000$ NaN values are returned. In addition, for $x\gg1$, the backscatter efficiency Qb should approach the geometrical-optics expression
+\begin{equation}
+	Q_b=\left|\frac{m^2-1}{m^2+1}\right|^2
+\end{equation}
+which is 0.1111 in the present case. With $m=2+0.01i$, this value is obtained from the Function mie for $x>300$.
+
 \subsection{Large refractive index}
+
+Problems arise for high values of m. This situation occurs for metallic spheres, e.g. if $m=50+50i$, the maximum size parameter is about 13, and this value decreases with increasing m. A plot of efficiencies with $m=50+50i$ is shown in Figure 5, and the radial dependence of the absolute-square E field is shown in Figure 6 for $x=0.5$; the skin effect is very pronounced already at this small x value. Furthermore, due to the acting depolarisation field, the internal field is very small even at the sphere surface.
 
 \section{Conclusion, and outlook to further developments}
 The presented software represents the first major programming effort by the author in MATLAB [translated to Python by the editor]; therefore the programs may not yet be optimum. Nevertheless, no severe problems have been encountered so far. Indeed, MATLAB appears to be a

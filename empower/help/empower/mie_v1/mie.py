@@ -1,3 +1,4 @@
+import os
 import mpmath as mp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -187,23 +188,28 @@ def mie_xscan(m, nsteps, dx):
     # Allocate result array
     results = np.zeros((nsteps, 9))
 
-    # Compute Mie results at each x
-    for j in range(nsteps):
-        results[j, :] = mie(m, x[j])
+    ## Compute Mie results at each x
+    #for j in range(nsteps):
+    #    results[j, :] = mie(m, x[j])
 
-    # Plot results (columns 3→8 correspond to qext...qratio)
-    plt.figure()
-    plt.plot(results[:, 2], results[:, 3:9])
-    plt.legend(['Qext', 'Qsca', 'Qabs', 'Qb', '<cosθ>', 'Qb/Qsca'])
-    plt.title(f"Mie Efficiencies, m = {m.real:.3g} + {m.imag:.3g}i")
-    plt.xlabel("Size parameter x")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
+    ## Plot results (columns 3→8 correspond to qext...qratio)
+    #plt.figure()
+    #plt.plot(results[:, 2], results[:, 3:9])
+    #plt.legend(['Qext', 'Qsca', 'Qabs', 'Qb', '<cosθ>', 'Qb/Qsca'])
+    #plt.title(f"Mie Efficiencies, m = {m.real:.3g} + {m.imag:.3g}i")
+    #plt.xlabel("Size parameter x")
+    #plt.grid(True)
+    #plt.tight_layout()
+    #plt.show()
 
-    return results
+    #return results
 
-def mie_tetascan(m, x, nsteps):
+    for j, x_j in enumerate(x):
+        results[j, :] = mie(m, x_j)
+
+    return x, results
+
+def mie_thetascan(m, x, nsteps):
     """
     Computation and plot of Mie Power Scattering function for given
     complex refractive-index ratio m=m'+im'', size parameters x=k0*a,
@@ -219,33 +225,35 @@ def mie_tetascan(m, x, nsteps):
     m2 = np.imag(m)
 
     # Create theta array
-    teta = np.linspace(0, np.pi, nsteps)
+    theta = np.linspace(0, np.pi, nsteps)
     
     SL = np.zeros(nsteps)
     SR = np.zeros(nsteps)
     
     for j in range(nsteps):
-        u = np.cos(teta[j])
+        u = np.cos(theta[j])
         a = mie_s12(m, x, u)
         SL[j] = np.real(a[0] * np.conj(a[0]))
         SR[j] = np.real(a[1] * np.conj(a[1]))
     
     # Mirror data like MATLAB code
-    y_theta = np.concatenate((teta, teta + np.pi))
-    y_vals = np.concatenate((SL, SR[::-1]))
+    y_theta = np.concatenate((theta, theta + np.pi))
+    y_vals = np.concatenate((SL, SR[::-1])) # Intensity?
 
-    y = np.column_stack((y_theta, y_vals))
+    #y = np.column_stack((y_theta, y_vals))
 
-    # Polar Plot
-    plt.figure()
-    ax = plt.subplot(111, projection='polar')
-    ax.plot(y[:, 0], y[:, 1])
-    ax.set_title(f"Mie angular scattering: m={m1}+{m2}i, x={x}")
-    ax.set_xlabel("Scattering Angle")
-    plt.show()
+    ## Polar Plot
+    #plt.figure()
+    #ax = plt.subplot(111, projection='polar')
+    #ax.plot(y[:, 0], y[:, 1])
+    #ax.set_title(f"Mie angular scattering: m={m1}+{m2}i, x={x}")
+    #ax.set_xlabel("Scattering Angle")
+    #plt.show()
 
-    result = y
-    return result
+    #result = y
+    #return result
+    
+    return y_theta, y_vals
 
 import numpy as np
 
@@ -372,22 +380,24 @@ def mie_esquare(m, x, nj):
     xxj = np.linspace(0, x, nj + 1)
     een = np.concatenate(([en[0]], en))
 
-    if SHOW_PLOTS:
-        # Plot results
-        plt.figure()
-        plt.plot(xxj, een)
-        plt.title(
-            f"Squared |E|² inside Sphere — "
-            f"m={float(m1):.4g}+{float(m2):.4g}i, x={float(x):.4g}"
-        )
-        plt.xlabel('r k')
-        plt.ylabel('|E|²')
-        plt.grid(True)
-        plt.legend(['Radial Dependence of (abs(E))²'])
-        plt.show()  
+    #if SHOW_PLOTS:
+    #    # Plot results
+    #    plt.figure()
+    #    plt.plot(xxj, een)
+    #    plt.title(
+    #        f"Squared |E|² inside Sphere — "
+    #        f"m={float(m1):.4g}+{float(m2):.4g}i, x={float(x):.4g}"
+    #    )
+    #    plt.xlabel('r k')
+    #    plt.ylabel('|E|²')#
+    #    plt.grid(True)
+    #    plt.legend(['Radial Dependence of (abs(E))²'])
+    #    plt.show()  
 
-    result = een
-    return result
+    #result = een
+    #return result
+    
+    return xxj, een
 
 def mie_abs(m, x):
     """
@@ -408,7 +418,8 @@ def mie_abs(m, x):
     """
 
     # Determine number of internal field samples
-    nj = 5 * round(2 + x + 4 * x**(1/3)) + 160
+    #nj = 5 * round(2 + x + 4 * x**(1/3)) + 160
+    nj = internal_field_sample_number(x)
 
     e2 = mp.im(m * m)
     dx = x / nj
@@ -417,8 +428,9 @@ def mie_abs(m, x):
     # Radial positions: 0, dx, 2dx, ..., x
     xj = np.linspace(0, x, nj + 1)
 
-    # Compute |E|^2 internal field profile
-    en = mie_esquare(m, x, nj)  # assumes Mie_Esquare internally calls Mie_abcd
+    ## Compute |E|^2 internal field profile
+    #en = mie_esquare(m, x, nj)  # assumes Mie_Esquare internally calls Mie_abcd
+    r, en = mie_esquare(m, x, nj)
 
     # End-term correction
     en1 = 0.5 * en[-1] * x2
@@ -436,11 +448,123 @@ def mie_abs(m, x):
     
     return result
     
+def internal_field_sample_number(x):
+    return 5 * round(2 + x + 4 * x**(1/3)) + 160
+ 
+
+def plot_mie_thetascan(theta, intensity, m, x,
+                   save=True,
+                   show=True,
+                   filename="figure_thetascan",
+                   folder="figures"):
+    """
+    Plot and optionally save Mie angular scattering.
+    """
+
+    m1, m2 = np.real(m), np.imag(m)
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+    ax.plot(theta, intensity)
+    ax.set_title(f"Mie angular scattering: m={m1}+{m2}i, x={x}")
+
+    if save:
+        os.makedirs(folder, exist_ok=True)
+        path = os.path.join(folder, f"{filename}.png")
+        fig.savefig(path, dpi=300, bbox_inches="tight")
+
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+
+    return fig, ax
+ 
+def plot_mie_xscan(x_vals, results, m,
+                   save=True,
+                   show=True,
+                   folder="figures",
+                   filename="figure_xscan"):
+    """
+    Plot and optionally save Mie efficiencies vs size parameter.
+    """
+
+    fig, ax = plt.subplots()
+
+    ax.plot(results[:, 2], results[:, 3:9])
+    ax.set_xlabel("Size parameter x")
+    ax.set_title(f"Mie Efficiencies, m = {m.real:.3g} + {m.imag:.3g}i")
+    ax.legend(['Qext', 'Qsca', 'Qabs', 'Qb', '<cosθ>', 'Qb/Qsca'])
+    ax.grid(True)
+
+    fig.tight_layout()
+
+    if save:
+        os.makedirs(folder, exist_ok=True)
+        fig.savefig(f"{folder}/{filename}.png", dpi=300)
+
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+
+    return fig, ax
+ 
+def plot_mie_esquare(r, e_sq, m, x,
+                     save=True,
+                     show=True,
+                     folder="figures",
+                     filename="figure_esquare"):
+    """
+    Plot and optionally save |E|^2 inside a sphere.
+    """
+
+    fig, ax = plt.subplots()
+
+    ax.plot(r, e_sq)
+    ax.set_xlabel("r k")
+    ax.set_ylabel("|E|²")
+    ax.set_title(
+        f"Squared |E|² inside Sphere — "
+        f"m={m.real:.4g}+{m.imag:.4g}i, x={x:.4g}"
+    )
+    ax.grid(True)
+    ax.legend(["Radial dependence of |E|²"])
+
+    fig.tight_layout()
+
+    if save:
+        os.makedirs(folder, exist_ok=True)
+        fig.savefig(f"{folder}/{filename}.png", dpi=300)
+
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+
+    return fig, ax 
+ 
 if __name__ == "__main__":
-    m = complex(5, 0.4)
+    m = 5 + 0.4j
     x = 1
-    #print(mie_abcd(m, x))
-    print(mie_abs(m, x))
-    mie_xscan(m, 201, 0.01)
+
+    x_vals, results = mie_xscan(m, 201, 0.01)
+
+    plot_mie_xscan(x_vals, results, m, save=True, filename="figure_1")
+    nj = internal_field_sample_number(x)
+    qabs = mie_abs(m, x)
+    r, een = mie_esquare(m, x, nj)
+    plot_mie_esquare(r, een, m, x, save=True, filename="figure_3")
+    m = 2 + 0.01j
+    x_vals, results = mie_xscan(m, 301, 25.0/300.0)
+    plot_mie_xscan(x_vals, results, m, save=True, filename="figure_4")
+    m = 50 + 50j
+    x = 0.5
+    x_vals, results = mie_xscan(m, 101, 12.0/100.0)
+    plot_mie_xscan(x_vals, results, m, save=True, filename="figure_5")    
+    nj = internal_field_sample_number(x)
+    qabs = mie_abs(m, x)
+    r, een = mie_esquare(m, x, nj)
+    plot_mie_esquare(r, een, m, x, save=True, filename="figure_6")
+
 
 
