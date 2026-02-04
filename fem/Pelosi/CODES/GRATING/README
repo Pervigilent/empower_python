@@ -1,0 +1,68 @@
+Chapter 3
+
+SCATTERING - HYBRID METHODS
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory Contents:
+
+ +-- GRATING.FOR   - The main program
+ +-- G_SUBS.FOR    - Subroutines
+ |
+ +-- CPLANE -+-      The coated plane problem
+ |           |
+ |           +-- CPLANET.TXT  - Mesh description file, 1st order triangles
+ |           +-- CPLANET.FEM  - The relative mesh file
+ |           +-- CPLANE.TXT   - Mesh description file, 2nd order quadrilaterals
+ |           +-- CPLANE.FEM   - The relative mesh file
+ |           |
+ |           |     N.B.  for space reasons only the finer meshes are here 
+ |	     |	         included, the reader interested in repeating the
+ |           |           complete example needs only to edit the two TXT file 
+ |           |           and regenerate the meshes
+ |           |
+ |           +-- CPLANE.AUX   - Electromagnetic data file, common to both 
+ |           |                  cases.
+ |           +-- TRIA.RES     - Reflection and Transmission coefficients, 
+ |           |                  this is assembled from the various REFLET.DAT
+ |           |                  and TRANSMIT.DAT files for different triangular
+ |           |                  meshes. It is the file used to generate
+ |           |                  the figure in the textbook
+ |           +-- QUAD.RES     - Idem, for quadrilateral meshes.
+ |           +-- REF.RES      - Idem, but filled with analitycal values.
+ |
+ +-- WINDOW -+-      The same problem as above, but open at the bottom
+ |           |
+ |           +-- PLANET.TXT   - Mesh description file, 1st order triangles
+ |           +-- PLANET.FEM   - The relative mesh
+ |           +-- PLANE##.AUX  - The electromagnetic data file at various 
+ |           |                  incidences, 90,70,50,30,10 degrees.
+ |           +-- ##R.DAT      - The Reflection coefficients at incidence ##,
+ |           |                  it is only file REFLET.DAT with another name.
+ |           +-- ##T.DAT      - Idem for Transmission coefficients
+ |
+ +-- GRATING -+-     Scattering by a strip grating on a dielectric slab   
+ |            |      p.e.c. backed
+ |            |
+ |            +-- GRATING.TXT  - Mesh description file
+ |            +-- GRATING.FEM  - The relative mesh
+ |            +-- GRATING.AUX  - Electromagnetic data file
+ |            +-- S11_000.DAT  - Scattering coefficients of Harmonics
+ |            +-- REFLET.DAT   - The reflection coefficient
+ |            +-- FIELD000.DAT - The interior field
+ |            +-- FIELDGNU.DAT - The same fiels, filtered by the Post-Processor
+ |                               and ready to be plotted
+ |
+ +-- PHOCRY -+-      A photonic crystal example
+	     |
+	     +-- PHOCRY#.TXT   - Mesh description file for a # layer
+	     |                   photonic crystal
+	     +-- PHOCRY#.FEM   - Relative meshes
+	     +-- PHOCRY1.AUX   - The common Electromagnetic datafile,
+	     |                   epsilonr = 4
+	     +-- PHOCRY2.AUX   - Idem, epsilonr = 8.9
+	     +-- REFLET#%.DAT  - Reflection coefficients for # layer
+	     |                 - and dielectric number %
+	     +-- TRANS#%.DAT   - Idem for Transmission coefficients
+

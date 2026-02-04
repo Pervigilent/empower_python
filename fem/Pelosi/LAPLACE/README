@@ -1,0 +1,28 @@
+Chapter 1
+
+LAPLACE'S PROBLEM
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory contents:
+
+ +-- LAPLACE.FOR - Program, self-contained, comprehensive of all the
+ |                 listings in chapter 1
+ |
+ +-- FIRST -+-     Example of Chapter 1
+ |	    |
+ |	    +-- RAW.FEM  - Coarse mesh for the example 
+ |          +-- RAWA.AUX - Input datafile for the air-spaced strip
+ |	    +-- RAWA.OUT - Relative output file
+ |	    +-- RAWD.AUX - Input datafile for the dielectric-spaced strip
+ | 	    +-- RAWD.OUT - Relative output file
+ |
+ +-- STRIP -+-     Example of realistic microstrip, as for Chapter 2
+	    |
+	    +-- STRIP.FEM  - Fine mesh for the example
+	    +-- STRIPA.AUX - Input datafile, air-spaced
+	    +-- STRIPA.OUT - Relative output file
+	    +-- STRIPD.AUX - Input datafile, dielectric-spaced
+	    +-- STRIPD.OUT - Relative output file
+

@@ -1,0 +1,54 @@
+Chapter 4
+
+WAVEGUIDES - DEVICES
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory Contents:
+
+ +-- EHDEV.FOR       Main program
+ +-- EHD_SUBS.FOR    Subroutines
+ |
+ +-- PSHIFT -+- The waveguide problem, or a fixed phase shifter
+ |           |
+ |           +-- PSHIFT#.TXT   Mesh description file, being # the number of
+ |           |                 element sides used in the discretization along
+ |           |                 the waveguide axis (axis z)
+ |           +-- PSHIFT#.FEM   The relative meshes
+ |           +-- PSHIFT.AUX    The electromagnetic data file, which is the same 
+ |           |                 for all the examples
+ |           +-- PSHIFT#.OUT   THe relative outputs
+ |           +-- PSHIFT#.GNU   Filtered output containing only the fundamental
+ |           |                 mode, ready for plotting
+ |           +-- PSHIFT.REF    Reference file, with the analitic solution
+ |
+ +-- IRIS -+- A simple symmetric iris
+ |         |
+ |         +-- IRIS1.TXT    The mesh description file
+ |         +-- IRIS1.FEM    The relative mesh
+ |         +-- IRIS1_#.AUX  The electromagnetic data files, for # number
+ |         |                of modes at each port.
+ |         +-- IRIS1_#.OUT  The relative outputs
+ |         +-- IRIS1_#.GNU  Filtered output, again ready for plotting 
+ |         +-- S##_%%.GNU   Filtered output, to show modal amplitudes, at
+ |                          port ## and frequency %%GHz
+ |
+ +-- BEND -+- Various bend shapes in WR75, E or H plane
+           |
+           +-- BEND$?.TXT The mesh desription file, being $ a letter to
+           |              distinguish bend shape:
+           |
+           |                q - square
+           |                f - fully mitered
+           |                p - partially mitered
+           |                c - circular
+           |     
+           |              And ? a letter to distinguish the plane (E or H)
+           |
+           +-- BEND$?.FEM The relative meshes
+           +-- BEND?.AUX  The auxiliary mesh description file, plane E or H
+           +-- BEND$?.OUT The output files
+           +-- BEND$?.GNU The filtered outputs
+
+

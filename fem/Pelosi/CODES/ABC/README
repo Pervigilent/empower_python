@@ -1,0 +1,126 @@
+Chapter 6
+
+ABSORBING BOUNDARY CONDITIONS
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory Contents:
+
+ +-- CYL -+- Scattering from a Cylinder
+ |        |
+ |        +-- CYL.FOR      Main program
+ |        +-- CYL_SUBS.FOR Subroutines
+ |        +-- ELEA.FOR     Elements for anisotropic media.
+ |        |
+ |        +-- PECYL -+-   PEC round cylinder
+ |        |          |
+ |        |          |   ANALITIC ABC
+ |        |          |
+ |        |          +-- PECYL.TXT Mesh description file
+ |        |          +-- PECYL.FEM The relative mesh
+ |        |          +-- PECYL.AUX The electromagnetic input file
+ |        |          +-- PECYL.REI The resulting scattered field
+ |        |          +-- PECYL.TOT The resulting total field
+ |        |          +-- PECYL.GNU Post-processed version of PECYL.TOT,
+ |        |          |             ready for plotting.
+ |        |          | 
+ |        |          |   PMA
+ |        |          |
+ |        |          +-- PECYLA.TXT Mesh description file
+ |        |          +-- PECYLA.FEM The relative mesh
+ |        |          +-- PECYLA.AUX The electromagnetic input file
+ |        |          +-- PECYLA.REI The resulting scattered field
+ |        |          +-- PECYLA.TOT The resulting total field
+ |        |          +-- PECYLA.GNU Post-processed version of PECYLA.TOT,
+ |        |          |             ready for plottin
+ |        |          | 
+ |        |          +-- REF.GNU    An assembled file for validation
+ |        |                         with the analitic solution at phi=0
+ |        |                         and rho=0.5..1.0
+ |        +-- DIECYL-+-   Dielectric square cylinder
+ |                   |
+ |                   |   ANALITIC ABC
+ |                   |
+ |                   +-- DIECYL.TXT Mesh description file
+ |                   +-- DIECYL.FEM The relative mesh
+ |                   +-- DIECYL.AUX The electromagnetic input file
+ |                   +-- DIECYL.REI The resulting scattered field
+ |                   +-- DIECYL.TOT The resulting total field
+ |                   +-- DIECYL.GNU Post-processed version of PECYL.TOT,
+ |                   |             ready for plotting.
+ |                   | 
+ |                   |   PMA
+ |                   |
+ |                   +-- DIECYLA.TXT Mesh description file
+ |                   +-- DIECYLA.FEM The relative mesh
+ |                   +-- DIECYLA.AUX The electromagnetic input file
+ |                   +-- DIECYLA.REI The resulting scattered field
+ |                   +-- DIECYLA.TOT The resulting total field
+ |                   +-- DIECYLA.GNU Post-processed version of PECYLA.TOT,
+ |                                 ready for plotting.
+ |                     
+ +-- OWG -+- Radiation for an Opened WaveGuide
+          |
+          +-- OWG.FOR      Main program
+          +-- OWG_SUBS.FOR Subroutines
+          +-- ELEA.FOR     Elements for anisotropic media.
+          +-- EHD_SUBS.FOR Subroutines of the Chapter 4 program EHDEV
+          |
+          +-- OWG -+-    Rectangular Waveguide opened on a pec plane
+          |        |
+          |        |     ANALYTIC ABC
+          |        |
+          |        +-- OWG.TXT     Mesh description file
+          |        +-- OWG.FEM     The relative mesh
+          |        +-- OWG.AUX     The electromagnetic input file
+          |        +-- OWG.OUT     The S11 of the various modes
+          |        +-- OWG.PLT     S11 of first mode, ready to be plotted
+          |        +-- OWG.RAD     Nodal values of the field on the aperture
+          |        +-- OWG.DAT     Field values at lowest frequency
+          |        +-- OWG.GNU     Relative Fieldmap
+          |        | 
+          |        |   PMA
+          |        |
+          |        +-- OWGA.TXT    Mesh description file
+          |        +-- OWGA.FEM    The relative mesh
+          |        +-- OWGA_##.AUX The electromagnetic input file,
+          |        |               With a ## value for the PMA coefficient
+          |        +-- OWGA_##.OUT The relative S11 of the various modes
+          |        +-- OWGA_##.PLT S11 of first mode, ready to be plotted
+          |        +-- OWGA_##.RAD Nodal values of the field on the aperture
+          |        +-- OWGA_##.DAT Field values at lowest frequency
+          |        +-- OWGA_##.GNU Relative Fieldmap
+          |        
+          +-- HORN-+-    Rectangular Horn 
+                   |
+                   |     ANALYTIC ABC
+                   |
+                   +-- HORN.TXT     Mesh description file
+                   +-- HORN.FEM     The relative mesh
+                   +-- HORN.AUX     The electromagnetic input file
+                   +-- HORN.OUT     The S11 of the various modes
+                   +-- HORN.PLT     S11 of first mode, ready to be plotted
+                   +-- HORN.RAD     Nodal values of the field on the aperture
+                   +-- HORN.DAT     Field values at lowest frequency
+                   +-- HORN.GNU     Relative Fieldmap
+		   +-- *D.*         Some of the above files are also present
+		   |                with a final 'D', these are relative to 
+		   |                the same problem but the analisys has been 
+		   |                carried out on a Delaunay regularized
+		   |                mesh.
+                   | 
+                   |   PMA
+                   |
+                   +-- HORNA.TXT    Mesh description file
+                   +-- HORNA.FEM    The relative mesh
+                   +-- HORNA_##.AUX The electromagnetic input file,
+                   |                 With a ## value for the PMA coefficient
+                   +-- HORNA_##.OUT The relative S11 of the various modes
+                   +-- HORNA_##.PLT S11 of first mode, ready to be plotted
+                   +-- HORNA_##.RAD Nodal values of the field on the aperture
+	           |                at lowest frequency
+                   +-- HORNA_##.DAT Field values at lowest frequency
+                   +-- HORNA_##.GNU Relative Fieldmap
+                   +-- *D##.*       Here, again, a 'D' in the file name 
+				    indicates a regularized mesh.

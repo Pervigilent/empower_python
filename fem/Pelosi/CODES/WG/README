@@ -1,0 +1,77 @@
+Chapter 3
+
+WAVEGUIDES - CHARACTERIZATION
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory Contents:
+
+ +-- WG.FOR         Main program
+ +-- WG_SUBS.FOR    Subroutines
+ +-- ELEX.FOR       Special element matrices G
+ |
+ +-- WG -+- The waveguide problem
+ |       |
+ |       +-- WG1.TXT   The rectangular waveguide mesh description file
+ |       +-- WG2E.TXT  Half waveguide, p.e.c. closed mesh description file
+ |       +-- WG2H.TXT  Half waveguide, p.m.c. closed mesh description file
+ |       |
+ |       |              N.B. These latter two examples are not described in 
+ |       |                   the text for the sake of brevity, but their
+ |       |                   utilization is straightforward.
+ |       |
+ |       +-- WG1.FEM  \
+ |       +-- WG2E.FEM  }- The relative meshes
+ |       +-- WG2H.FEM /
+ |       |
+ |       +-- WG.AUX    The electromagnetic data file, which is the same 
+ |       |             for all the examples
+ |       |
+ |       +-- WG1.OUT  \
+ |       +-- WG2E.OUT  }- The relative output files
+ |       +-- WG2H.OUT /
+ |       
+ |                      N.B. Due to the ill conditioning of the problem
+ |                           complex mode due to numerical errors may
+ |                           arise and very small files .CPL may be created
+ |
+ +-- COAX -+-   An example spanning a quarter of coaxial cable.
+ |         |
+ |         +-- COAX.TXT   The mesh description file for the CC
+ |         +-- COAX.FEM   The relative mesh
+ |         +-- COAX.AUX   The auxiliary mesh description file
+ |         +-- COAX.OUT   The output file
+ |
+ +-- STRIP -+-  The microstrip analisys, same configuration of Chap. 1 & 2
+ |          |
+ |          +-- IWG.TXT  Mesh description file
+ |          +-- IWG.FEM  The relative mesh
+ |          +-- IWG.AUX  The electromagnetic datafile
+ |          |
+ |          +-- IWG.OUT  The raw output of the problem
+ |          +-- IWG.CPL  The complex modes data
+ |          |
+ |          +-- N1.DAT   Filtered IWG.OUT, contaning only ordinary modes
+ |          |            with ordinary behaviour
+ |          +-- N2A.DAT  Filtered IWG.OUT, containing the low frequency part
+ |          |            of the dispersion diagram where modes which
+ |          |            degenerates still have an ordinary behaviour
+ |          +-- N2B.DAT  Idem, for the high frequency part
+ |          +-- N3.DAT   Filtered IWG.CPL, containing the complex modes
+ |          |            relative to the middle portion of the diagram
+ |          +-- GNUBM    A GNUPLOT batch file which masters the previous
+ |                       four filtered files, in GNUPLOT type "load 'gnubm'"
+ |
+ +-- FIN -+-    An example encompassing a Finline
+	  |
+	  +-- FIN.TXT    Mesh description file
+	  +-- FIN.FEM    The relative mesh
+	  +-- FIN.AUX    The electromagnetic datafile
+	  +-- FIN.OUT    The ordinary modes
+	  +-- FIN.CPL    The complex modes, which anyway, do not appear
+			 in the range of interest.
+
+ ll
+
+

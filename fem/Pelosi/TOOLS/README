@@ -1,0 +1,45 @@
+Chapter 2
+
+TOOLS
+
+QUICK FEM (C) 1997 G.PELOSI R. COCCIOLI S. SELLERI
+
+
+  Directory Contents:
+
+ +-- LIB -+-    Subroutines, from these the best thing to do is to build
+ |	  |	a library, we suggest QF.LIB as name
+ |        |
+ |	  +- BAND.FOR     - Function to access a matrix in band storage mode
+ |        +- BANDEX.FOR   - Function to estimate band occupation
+ |        +- BSOLVE.FOR   - Block Solver (See Chapter 3)
+ |        +- DELAUNAY.FOR - Procedure which performs Delunay regularization
+ |        +- ELEE.FOR     - Functions to provide the element matrices for
+ |        |                 edge elements
+ |        +- ELEN.FOR     - Functions to provide the element matrices for
+ |        |                 nodal elements
+ |        +- FEMPS.FOR    - Subroutine to translate a FEM mesh to a PostScript
+ |        |                 file
+ |        +- FINDEQN.FOR  - Subroutine to find equivalent nodes in periodic
+ |        |                 structure meshes
+ |        +- PNJEXP.FOR   - Function to compute Basis function times exponential
+ |        |                 integrals (See Chapter 3)
+ |        +- READ.FOR     - Subroutine to read a mesh
+ |        +- READN.FOR    - Subroutine to read a mesh, skipping edges
+ |        +- RENUMBER.FOR - Subroutine to perform numbering optimization
+ |        +- SOLVE.FOR    - A straightforward gauss solver for banded matrices
+ |        +- WRITE.FOR    - Subroutine to write the mesh
+ |        +- WRITECR.FOR  - Subroutine to write an output file for the
+ |                          Post-processor
+ |
+ +-- MAINS -+-  Main tool programs and simple drivers for the LIB subroutines
+            |
+	    +- MESH.FOR    - The mesh generator
+            +- POSTPRO.FOR - The post-processor
+            |
+	    +- DO_BEX.FOR  - Driver which estimates band of the FEM matrix 
+            |         	     for a given mesh
+            +- DO_DEL.FOR  - Driver for the Delunay regularization
+            +- DO_F2PS.FOR - Driver for the PostScript translator
+            +- DO_REN.FOR  - Driver for the numbering optimization
+
