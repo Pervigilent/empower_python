@@ -1,4 +1,4 @@
-# empower_python
+# EMPower
 
 EMPower Python Application
 
@@ -11,7 +11,7 @@ EMPower Python is a prototype of the EMPower application (under development). Af
 To run the application, use the following command
 
 ```
-user@computer:~/empower_python$ python3 -m empower.main
+user@computer:~/empower$ python3 -m empower.main
 ```
 
 ### FEM

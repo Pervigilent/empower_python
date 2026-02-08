@@ -1,5 +1,5 @@
 [project]
-name = "empower"
+name = "EMPower"
 version = "1.0.0"
 dependencies = [
   "httpx",
@@ -26,6 +26,6 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Pervigilent/empower_python"
-Repository = "https://github.com/Pervigilent/empower_python.git"
+Homepage = "https://github.com/Pervigilent/empower"
+Repository = "https://github.com/Pervigilent/empower.git"
 
