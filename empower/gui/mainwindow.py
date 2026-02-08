@@ -5,6 +5,15 @@ import os
 import sys
 import subprocess
 
+from empower.gui.utilities import (
+	Display,
+	ProjectManager,
+	Properties,
+	MessageManager,
+	Progress,
+	Status
+)
+
 class WindowMode(Enum):
 	BASE = 0
 	EMPOWER = 1
@@ -203,10 +212,10 @@ class MainWindow(tk.Tk):
 		self.lower_frame = ttk.Frame(self) # Display
 		self.left_frame = ttk.Frame(self.lower_frame)
 		self.right_frame = ttk.Frame(self.lower_frame)
-		self.upper_left_frame = ttk.Frame(self.left_frame) # Project Manager - Treeview
-		self.lower_left_frame = ttk.Frame(self.left_frame) # Properties - Table
-		self.upper_right_frame = ttk.Frame(self.right_frame) # Display / Work area
-		self.lower_right_frame = ttk.Frame(self.right_frame) # Status
+		self.upper_left_frame = ProjectManager(self.left_frame) # Project Manager - Treeview
+		self.lower_left_frame = Properties(self.left_frame) # Properties - Table
+		self.upper_right_frame = Display(self.right_frame) # Display / Work area
+		self.lower_right_frame = Status(self.right_frame) # Status
 		
 		self.left_display_frame = ttk.Frame(self.upper_right_frame) # Object hierarchy - Treeview
 		self.right_display_frame = ttk.Frame(self.upper_right_frame) # Drawing window
