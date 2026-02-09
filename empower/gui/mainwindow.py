@@ -19,10 +19,13 @@ class WindowMode(Enum):
 	EMPOWER = 1
 
 class MainWindow(tk.Tk):
+	LEFT_FRAME_WIDTH = 480
+	RIGHT_FRAME_WIDTH = 720
+	WINDOW_GEOMETRY = "1200x800" #"1080x720"
 	def __init__(self):
 		super().__init__()
 		self.title("Nash Electronics Desktop")
-		self.geometry("1080x720")
+		self.geometry(MainWindow.WINDOW_GEOMETRY)
 		self.window_mode = WindowMode.BASE
 		self.create_menu()
 		self.create_windows()
@@ -210,31 +213,35 @@ class MainWindow(tk.Tk):
 	def create_windows(self):
 		self.upper_frame = ttk.Frame(self) # Ribbon
 		self.lower_frame = ttk.Frame(self) # Display
-		self.left_frame = ttk.Frame(self.lower_frame)
-		self.right_frame = ttk.Frame(self.lower_frame)
+		self.left_frame = ttk.Frame(self.lower_frame, width=MainWindow.LEFT_FRAME_WIDTH)
+		self.right_frame = ttk.Frame(self.lower_frame, width=MainWindow.RIGHT_FRAME_WIDTH)
 		self.upper_left_frame = ProjectManager(self.left_frame) # Project Manager - Treeview
 		self.lower_left_frame = Properties(self.left_frame) # Properties - Table
 		self.upper_right_frame = Display(self.right_frame) # Display / Work area
-		self.lower_right_frame = Status(self.right_frame) # Status
+		self.lower_right_frame = ttk.Frame(self.right_frame)
+		self.message_frame = MessageManager(self.lower_right_frame)
+		self.progress_frame = Progress(self.lower_right_frame)
 		
-		self.left_display_frame = ttk.Frame(self.upper_right_frame) # Object hierarchy - Treeview
-		self.right_display_frame = ttk.Frame(self.upper_right_frame) # Drawing window
-		self.left_status_frame = ttk.Frame(self.lower_right_frame) # Message Manager - Treeview
-		self.right_status_frame = ttk.Frame(self.lower_right_frame) # Progress - stacked Progressbar
+		#self.left_display_frame = ttk.Frame(self.upper_right_frame) # Object hierarchy - Treeview
+		#self.right_display_frame = ttk.Frame(self.upper_right_frame) # Drawing window
+		#self.left_status_frame = ttk.Frame(self.lower_right_frame) # Message Manager - Treeview
+		#self.right_status_frame = ttk.Frame(self.lower_right_frame) # Progress - stacked Progressbar
 		
-		self.upper_frame.pack()
-		self.lower_frame.pack()
-		self.left_frame.pack(side=tk.LEFT)
-		self.right_frame.pack(side=tk.LEFT)
+		self.upper_frame.grid(row=0, column=0, sticky="nsew")
+		self.lower_frame.grid(row=1, column=0, sticky="nsew")
+		self.left_frame.grid(row=0, column=0, sticky="nsw")
+		self.right_frame.grid(row=0, column=1, columnspan=2, sticky="nse")
 		
-		self.upper_left_frame.pack()
-		self.lower_left_frame.pack()
-		self.upper_right_frame.pack()
-		self.lower_right_frame.pack()
-		self.left_display_frame.pack(side=tk.LEFT)
-		self.right_display_frame.pack(side=tk.LEFT)
-		self.left_status_frame.pack(side=tk.LEFT)
-		self.right_status_frame.pack(side=tk.LEFT)
+		self.upper_left_frame.grid(row=0, column=0, sticky="n")
+		self.lower_left_frame.grid(row=1, column=0, sticky="s")
+		self.upper_right_frame.grid(row=0, column=0, rowspan=2)
+		self.lower_right_frame.grid(row=2, column=0)
+		#self.left_display_frame.pack(side=tk.LEFT)
+		#self.right_display_frame.pack(side=tk.LEFT)
+		#self.left_status_frame.pack(side=tk.LEFT)
+		#self.right_status_frame.pack(side=tk.LEFT)
+		self.message_frame.grid(row=0, column=0)
+		self.progress_frame.grid(row=0, column=1)
 
 	def generic_callback(self):
 		pass
