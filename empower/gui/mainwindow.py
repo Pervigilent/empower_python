@@ -212,9 +212,10 @@ class MainWindow(tk.Tk):
 		
 	def create_windows(self):
 		self.upper_frame = ttk.Frame(self) # Ribbon
-		self.lower_frame = ttk.Frame(self) # Display
-		self.left_frame = ttk.Frame(self.lower_frame, width=MainWindow.LEFT_FRAME_WIDTH)
-		self.right_frame = ttk.Frame(self.lower_frame, width=MainWindow.RIGHT_FRAME_WIDTH)
+		self.middle_frame = ttk.Frame(self) # Windows (and Display)
+		self.lower_frame = ttk.Frame(self) # Status
+		self.left_frame = ttk.Frame(self.middle_frame, width=MainWindow.LEFT_FRAME_WIDTH)
+		self.right_frame = ttk.Frame(self.middle_frame, width=MainWindow.RIGHT_FRAME_WIDTH)
 		self.upper_left_frame = ProjectManager(self.left_frame) # Project Manager - Treeview
 		self.lower_left_frame = Properties(self.left_frame) # Properties - Table
 		self.upper_right_frame = Display(self.right_frame) # Display / Work area
@@ -228,13 +229,14 @@ class MainWindow(tk.Tk):
 		#self.right_status_frame = ttk.Frame(self.lower_right_frame) # Progress - stacked Progressbar
 		
 		self.upper_frame.grid(row=0, column=0, sticky="nsew")
-		self.lower_frame.grid(row=1, column=0, sticky="nsew")
-		self.left_frame.grid(row=0, column=0, sticky="nsw")
-		self.right_frame.grid(row=0, column=1, columnspan=2, sticky="nse")
+		self.middle_frame.grid(row=1, column=0, sticky="nsew")
+		self.lower_frame.grid(row=2, column=0, sticky="nsew")
+		self.left_frame.grid(row=0, column=0, sticky="nsew")
+		self.right_frame.grid(row=0, column=1, columnspan=2, sticky="nsew")
 		
-		self.upper_left_frame.grid(row=0, column=0, sticky="n")
-		self.lower_left_frame.grid(row=1, column=0, sticky="s")
-		self.upper_right_frame.grid(row=0, column=0, rowspan=2)
+		self.upper_left_frame.grid(row=0, column=0, sticky="nsew")
+		self.lower_left_frame.grid(row=1, column=0, sticky="nsew")
+		self.upper_right_frame.grid(row=0, column=0, rowspan=2, sticky="nsew")
 		self.lower_right_frame.grid(row=2, column=0)
 		#self.left_display_frame.pack(side=tk.LEFT)
 		#self.right_display_frame.pack(side=tk.LEFT)
