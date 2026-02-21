@@ -10,7 +10,7 @@ from empower.gui.utilities import (
 	ProjectManager,
 	Properties,
 	MessageManager,
-	Progress,
+	ProgressViewer,
 	Status
 )
 
@@ -221,7 +221,7 @@ class MainWindow(tk.Tk):
 		self.upper_right_frame = Display(self.right_frame) # Display / Work area
 		self.lower_right_frame = ttk.Frame(self.right_frame)
 		self.message_frame = MessageManager(self.lower_right_frame)
-		self.progress_frame = Progress(self.lower_right_frame)
+		self.progress_frame = ProgressViewer(self.lower_right_frame)
 		
 		#self.left_display_frame = ttk.Frame(self.upper_right_frame) # Object hierarchy - Treeview
 		#self.right_display_frame = ttk.Frame(self.upper_right_frame) # Drawing window

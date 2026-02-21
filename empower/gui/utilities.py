@@ -81,12 +81,58 @@ class MessageManager(ttk.Frame):
 		self.frame.pack()
 
 
-class Progress(ttk.Frame):
-	def __init__(self, parent, controller=None):
+class ProgressViewer(ttk.Frame):
+	def __init__(self, parent, controller=None,
+	        height=200, width=400):
 		super().__init__(parent)
-		self.frame = ttk.Labelframe(self, text="Progress")
 		
-		self.frame.pack()
+		self.frame = ttk.Labelframe(self, text="Progress")
+		self.canvas = tk.Canvas(self.frame, height=height, width=width)
+		self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+		self.canvas.configure(yscrollcommand=self.scrollbar.set)
+		
+		self.inner_frame = ttk.Frame(self.canvas)
+		self.window = self.canvas.create_window((0, 0), window=self.inner_frame, anchor="nw")
+		self.canvas.grid(row=0, column=0, sticky="nsew")
+		self.scrollbar.grid(row=0, column=1, sticky="ns")
+		
+		self.columnconfigure(0, weight=1)
+		self.rowconfigure(0, weight=1)
+		
+		self.inner_frame.bind("<Configure>", self._on_frame_configure)
+		self.canvas.bind("<Configure>", self._on_canvas_configure)
+		
+		self.items = []
+		
+		self.frame.grid(row=0, column=0)
+		
+	def _on_frame_configure(self, event):
+	    self.canvas.configure(scrollregion=self.canvs.bbox("all"))
+	    
+	def _on_canvas_configure(self, event):
+	    self.canvas.itemconfig(self.window, width=event.width)
+	    
+	def add_item(self, text):
+	    item = Progress(self.inner_frame, text=text)
+	    item.pack(fill="x", padx=5, pady=3)
+	    self.items.append(item)
+	    
+	    return item
+
+
+class Progress(ttk.Frame):
+    def __init__(self, parent, text="", maximum=100):
+        super().__init__(parent)
+        
+        self.label = ttk.Label(self, text=text, width=20, anchor="w")
+        self.bar = ttk.Progressbar(self, orient="horizontal", mode="determinate", maximum=maximum)
+        self.label.grid(row=0, column=0, padx=5, sticky="w")
+        self.progress.grid(row=0, column=1, padx=5, sticky="ew")
+        self.columnconfigure(1, weight=1)
+        
+    def set(self, value):
+        self.progress["value"] = value
+
 
 class Status(ttk.Frame):
 	def __init__(self, parent, controller=None):
