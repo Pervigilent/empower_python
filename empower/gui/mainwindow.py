@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import filedialog as fd
 from tkinter import ttk
 from enum import Enum
 import os
@@ -22,8 +23,9 @@ class MainWindow(tk.Tk):
 	LEFT_FRAME_WIDTH = 480
 	RIGHT_FRAME_WIDTH = 720
 	WINDOW_GEOMETRY = "1200x800" #"1080x720"
-	def __init__(self):
+	def __init__(self, parent):
 		super().__init__()
+		self.parent = parent
 		self.title("Nash Electronics Desktop")
 		self.geometry(MainWindow.WINDOW_GEOMETRY)
 		self.window_mode = WindowMode.BASE
@@ -63,12 +65,12 @@ class MainWindow(tk.Tk):
 		# Empower File Menu
 		self.empower_file_menu = tk.Menu(self.empower_menubar, tearoff=0)
 		self.empower_file_menu.add_command(label='New', command=self.generic_callback)
-		self.empower_file_menu.add_command(label='Open...', command=self.generic_callback)
+		self.empower_file_menu.add_command(label='Open...', command=self.open)
 		self.empower_file_menu.add_command(label='Open Examples...', command=self.generic_callback)
 		self.empower_file_menu.add_command(label='Close', command=self.generic_callback)
 		self.empower_file_menu.add_separator()
-		self.empower_file_menu.add_command(label='Save', command=self.generic_callback)
-		self.empower_file_menu.add_command(label='Save As...', command=self.generic_callback)
+		self.empower_file_menu.add_command(label='Save', command=self.save)
+		self.empower_file_menu.add_command(label='Save As...', command=self.save_as)
 		self.empower_file_menu.add_command(label='Save As Technology File', command=self.generic_callback)
 		self.empower_file_menu.add_separator()
 		self.empower_file_menu.add_command(label='Archive...', command=self.generic_callback)
@@ -245,9 +247,50 @@ class MainWindow(tk.Tk):
 		self.message_frame.grid(row=0, column=0)
 		self.progress_frame.grid(row=0, column=1)
 
+## Callbacks
+
 	def generic_callback(self):
 		pass
+			
+	def insert_empower_design(self):
+		self.switch_window_mode(mode=WindowMode.EMPOWER)
 		
+	def open(self, filename):
+	    filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
+	    filename = fd.askopenfilename(
+	        title='Select EMPower file',
+	        #initialdir='./',
+	        filetypes=filetypes
+	    )
+	    if filename:
+	        parent.read(filename)
+	
+	def open_reference(self, filename):
+		if os.name == 'nt':  # Windows
+			os.startfile(filename)
+		elif sys.platform == 'darwin':	# macOS
+			subprocess.Popen(['open', filename])
+		else:  # Linux
+			subprocess.Popen(['xdg-open', filename])
+			
+	def save(self):
+	    self.parent.save()
+	    
+	def save_as(self):
+	    filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
+	    if not self.parent.projects:
+	        messagebox.showwarning("Warning", "Nothing to save.")
+	    else:
+	        filename = fd.asksaveasfilename(
+	            title="Save As",
+	            defaultextension=".emp",
+	            filteypes=filetypes
+	        )
+	    if filename:
+	        self.parent.save_as(filename)
+
+## Accessory functions
+
 	def switch_window_mode(self, mode):
 		if mode == WindowMode.BASE:
 			if self.window_mode is not WindowMode.BASE:
@@ -257,21 +300,4 @@ class MainWindow(tk.Tk):
 			if self.window_mode is not WindowMode.EMPOWER:
 				self.window_mode = WindowMode.EMPOWER
 				self.config(menu=self.empower_menubar)
-			
-	def insert_empower_design(self):
-		self.switch_window_mode(mode=WindowMode.EMPOWER)
-		
-	def open(self, filename):
-	    pass
-	
-	def open_reference(self, filename):
-		if os.name == 'nt':  # Windows
-			os.startfile(filename)
-		elif sys.platform == 'darwin':	# macOS
-			subprocess.Popen(['open', filename])
-		else:  # Linux
-			subprocess.Popen(['xdg-open', filename])
-
-
-		
 	

@@ -1,6 +1,85 @@
 from empower.gui.mainwindow import MainWindow
+import xml.etree.ElementTree as ET
+import os
+
 
 class Application:
     def __init__(self):
-        self.main_window = MainWindow()
+        self.projects = []
+        
+        self.main_window = MainWindow(self)
         self.main_window.mainloop()
+        
+    def read(self, filename):
+        if not os.path.exists(filename):
+            messagebox.showerror("Error", "Selected file does not exist.")
+            return
+            
+        with open(filename, 'r') as file:
+            content = file.read()
+        try:
+            tree = ET.parse(filepath)
+            root = tree.getroot()
+            Project.parse(projects=self.projects, tree=tree)
+        except ET.ParseError as e:
+            messagebox.showerror("File Parse Error", f"Failed to read file:\n{e}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Unexpected error:\n{e}")
+            
+    def save(self):
+        pass
+        
+    def save_as(self, filename):
+        if self.projects:
+            extension = os.path.splittext(filename)[1].lower()
+            try:
+                if ext == ".emp":
+                    Project.tree.write(filename, encoding="utf-8", xml_declaration=True)
+                elif ext == ".aedt":
+                    AnsysParser.save(tree=Project.tree, filename=filename)
+                else:
+                    messagebox.showerror("Unsupported file type", "Only supports .emp and .aedt")
+            except Exception as e:
+                messagebox.showerror("Could not save file", str(e))
+            
+
+class Project:
+    tree = None
+    projects = []
+    def __init__(self, tree=None):
+        if tree is not None:
+            Project.parse(tree)
+        else:
+            #Project.tree = None
+            Project.projects.append(self)            
+        
+    @classmethod
+    def create_tree(cls):
+        pass    
+        
+    @classmethod
+    def get_tree(cls):
+        Project.create_tree()
+        return Project.tree
+        
+    @classmethod
+    def parse(cls, projects, tree):
+        pass
+    
+#TODO: Model AnsysParser on tinyxml and separate into another module or folder/package
+class AnsysParser:
+    def __init__(self, filename):
+        pass
+        
+    @classmethod
+    def parse(cls, filename):
+        pass
+        
+    @classmethod
+    def convert(cls, tree):
+        pass
+        
+    @classmethod
+    def save(cls, filename, tree):
+        pass
+

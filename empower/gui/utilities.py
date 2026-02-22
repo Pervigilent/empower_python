@@ -107,7 +107,7 @@ class ProgressViewer(ttk.Frame):
 		self.frame.grid(row=0, column=0)
 		
 	def _on_frame_configure(self, event):
-	    self.canvas.configure(scrollregion=self.canvs.bbox("all"))
+	    self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 	    
 	def _on_canvas_configure(self, event):
 	    self.canvas.itemconfig(self.window, width=event.width)
