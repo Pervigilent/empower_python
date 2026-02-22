@@ -260,6 +260,9 @@ class MainWindow(tk.Tk):
 			
 	def insert_empower_design(self):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
+		
+	def open(self, filename):
+	    pass
 	
 	def open_reference(self, filename):
 		if os.name == 'nt':  # Windows
