@@ -6,6 +6,10 @@ EMPower Python Application
 
 EMPower Python is a prototype of the EMPower application (under development). After EMPower Python is completed, a C++ implementation will be creted (hopefully). The Python implementation is not fully optimized for performance, or rather, performance is not a primary concern of this implementation.
 
+Opens EMP file type which can be converted to AEDT.
+
+Intend to add FDTD engine with MEEP with functionality similar to Lumerical.
+
 ## EMPower
 
 To run the application, use the following command
