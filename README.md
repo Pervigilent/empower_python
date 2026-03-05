@@ -20,6 +20,10 @@ user@computer:~/empower$ python3 -m empower.main
 
 FEM is intended to be the primary solver for the EMPower application. For now, the documentation from Pelosi et al. has been included.
 
+### FDTD
+
+FDTD is an accessory solver integrating MEEP.
+
 ## Mie Scattering
 
 EMPower will eventually have a robust Mie scattering capability. For now, the Mie scattering codes and documentation of Christian Maetzler has been included as a template for developing documentation and algorithms for Mie Scattering.
