@@ -31,6 +31,14 @@ class MainWindow(tk.Tk):
 		self.window_mode = WindowMode.BASE
 		self.create_menu()
 		self.create_windows()
+		
+		self.controller = None
+		
+	def set_controller(self, controller):
+		self.controller = controller
+		
+	def on_change(self):
+		self.controller.update()
 
 	def create_menu(self):
 		self.menubar = tk.Menu(self)
@@ -256,14 +264,14 @@ class MainWindow(tk.Tk):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
 		
 	def open(self, filename):
-	    filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
-	    filename = fd.askopenfilename(
-	        title='Select EMPower file',
-	        #initialdir='./',
-	        filetypes=filetypes
-	    )
-	    if filename:
-	        parent.read(filename)
+		filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
+		filename = fd.askopenfilename(
+			title='Select EMPower file',
+			#initialdir='./',
+			filetypes=filetypes
+		)
+		if filename:
+			parent.read(filename)
 	
 	def open_reference(self, filename):
 		if os.name == 'nt':  # Windows
@@ -274,20 +282,20 @@ class MainWindow(tk.Tk):
 			subprocess.Popen(['xdg-open', filename])
 			
 	def save(self):
-	    self.parent.save()
-	    
+		self.parent.save()
+		
 	def save_as(self):
-	    filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
-	    if not self.parent.projects:
-	        messagebox.showwarning("Warning", "Nothing to save.")
-	    else:
-	        filename = fd.asksaveasfilename(
-	            title="Save As",
-	            defaultextension=".emp",
-	            filteypes=filetypes
-	        )
-	    if filename:
-	        self.parent.save_as(filename)
+		filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
+		if not self.parent.projects:
+			messagebox.showwarning("Warning", "Nothing to save.")
+		else:
+			filename = fd.asksaveasfilename(
+				title="Save As",
+				defaultextension=".emp",
+				filteypes=filetypes
+			)
+		if filename:
+			self.parent.save_as(filename)
 
 ## Accessory functions
 
@@ -300,4 +308,19 @@ class MainWindow(tk.Tk):
 			if self.window_mode is not WindowMode.EMPOWER:
 				self.window_mode = WindowMode.EMPOWER
 				self.config(menu=self.empower_menubar)
+				
+
+class MainController:
+	def __init__(self, model, view):
+		self.model = model
+		self.view = view
+		
+		self.view.set_controller(self)
+		self.model.add_observer(self.on_change)
+		self.model.notify()
 	
+	def update(self):
+		pass
+		
+	def on_change(self):
+		self.update()

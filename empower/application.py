@@ -8,9 +8,17 @@ import re
 class Application:
     def __init__(self):
         self.projects = []
+        self._observers = []
         
         self.main_window = MainWindow(self)
         self.main_window.mainloop()
+        
+    def add_observer(self, function):
+        self._observers.append(function)
+        
+    def notify(self):
+        for function in self._observers:
+            function()
         
     def read(self, filename):
         if not os.path.exists(filename):
