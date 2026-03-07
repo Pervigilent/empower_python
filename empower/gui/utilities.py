@@ -52,6 +52,12 @@ class ProjectManager(ttk.Frame):
 		self.projects = value
 		self.update_projects()
 		
+	def set_tree(self, tree):
+	    self.tree = tree
+	    
+	def update_tree(self):
+	    pass
+		
 	def update_projects(self):
 		if self.projects is not None:
 			self.project_items = []

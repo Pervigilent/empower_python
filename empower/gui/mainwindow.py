@@ -32,7 +32,8 @@ class MainWindow(tk.Tk):
 		self.create_menu()
 		self.create_windows()
 		
-		self.controller = None
+		self.model = parent
+		self.controller = MainWindowController(model=parent, view=self)
 		
 	def set_controller(self, controller):
 		self.controller = controller
