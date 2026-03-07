@@ -1,8 +1,14 @@
 from empower.gui.mainwindow import MainWindow
 from empower.ansys import AnsysParser
+
 import xml.etree.ElementTree as ET
 import os
 import re
+import enum
+
+
+class ProjectType(enum.Enum):
+    HFSS = 1
 
 
 class Application:
