@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import os
 import re
 import enum
+from tkinter import messagebox
 
 
 class ProjectType(enum.Enum):
@@ -21,7 +22,10 @@ class Application:
         
     def add_observer(self, function):
         self._observers.append(function)
-        
+    
+    def get_projects(self):
+        return self.projects
+    
     def notify(self):
         for function in self._observers:
             function()
@@ -30,30 +34,24 @@ class Application:
         if not os.path.exists(filename):
             messagebox.showerror("Error", "Selected file does not exist.")
             return
-            
-        with open(filename, 'r') as file:
-            content = file.read()
-        try:
-            tree = ET.parse(filepath)
-            root = tree.getroot()
-            Project.parse(projects=self.projects, tree=tree)
-        except ET.ParseError as e:
-            messagebox.showerror("File Parse Error", f"Failed to read file:\n{e}")
-        except Exception as e:
-            messagebox.showerror("Error", f"Unexpected error:\n{e}")
+        self.projects.append(ProjectFile(filename))
+        self.notify()
             
     def save(self):
         pass
         
     def save_as(self, filename):
+        active_project = None #TODO: Set active project
         if self.projects:
+            active_project = self.projects[0]
             extension = os.path.splittext(filename)[1].lower()
             try:
                 if ext == ".emp":
-                    Project.tree.write(filename, encoding="utf-8", xml_declaration=True)
+                    active_project.set_filename(filename)
+                    active_project.tree.write(filename, encoding="utf-8", xml_declaration=True)
                 elif ext == ".aedt":
                     with open(filename, "w") as f:
-                        tree = Project.get_tree()
+                        tree = active_project.get_tree()
                         root_element = tree.getroot()
                         root_node = AnsysParser.convert_xml(root_element)                        
                         AnsysParser.write(node=root_node, file=f)
@@ -63,54 +61,62 @@ class Application:
                 messagebox.showerror("Could not save file", str(e))
 
 
-class ProjectElement:
-    def __init__(self, element):
-        name = element.get("Name")
-
-
 class Project:
-    filename = None
-    name = None
-    tree = None
-    projects = []
-    def __init__(self, tree=None, filename=None):
-        if tree is not None:
-            Project.tree = tree
-            Project.parse(tree)
-        else:
-            #Project.tree = None
-            Project.projects.append(self)
-        
-        if filename is not None:
-            Project.filename = filename
+    def __init__(self, element):
+        self.element = element
+        self.name = element.get("Name")
 
-    @classmethod
-    def create_tree(cls): # Create tree from projects?
-        root = ET.Element('AnsoftProject')
+
+class ProjectFile:
+    def __init__(self, filename):
+        self.tree = None
+        self.root = None
+        self.projects = []
+        self.content = None
+        self.filename = filename
+        basename = os.path.basename(filename)
+        self.name, extension = os.path.splitext(basename)
+
+        with open(filename, 'r') as file:
+            self.content = file.read()
+        try:
+            self.tree = ET.parse(filepath)
+            self.root = tree.getroot()
+            self.parse(tree=tree)
+        except ET.ParseError as e:
+            messagebox.showerror("File Parse Error", f"Failed to read file:\n{e}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Unexpected error:\n{e}")
+
+    def create_tree(self): # Create tree from projects?
+        self.root = ET.Element('AnsoftProject')
         for project in self.projects:
-            ET.SubElement(root, 'HFSSModel', {'Name' : project.name})
-        Project.tree = ET.ElementTree(root)
+            ET.SubElement(self.root, 'HFSSModel', {'Name' : project.name})
+        self.tree = ET.ElementTree(self.root)
 
-    @classmethod
-    def get_tree(cls):
-        Project.create_tree()
-        return Project.tree
+    def get_tree(self):
+        self.create_tree()
+        return self.tree
         
-    @classmethod
-    def parse(cls, projects, tree):
-        Project.tree = tree
-        root = tree.getroot()
-        Project.projects = []
-        for model in root.iter("HFSSModel"):
-            Project.projects.append(ProjectElement(model))
-        projects = Project.projects
+    def parse(self, tree):
+        #self.tree = tree
+        #self.root = self.tree.getroot()
+        #self.projects = []
+        for model in self.root.iter("HFSSModel"):
+            self.projects.append(ProjectElement(model))
             
-        
-    @classmethod
-    def get_name(cls):
-        if Project.filename is not None:
-            basename = os.path.basename(filename)
+    def get_name(self):
+        if self.filename is not None:
+            basename = os.path.basename(self.filename)
             return os.path.splitext(basename)[0]
+            
+    def get_filename(self):
+        return self.filename
+            
+    def set_filename(self, filename):
+        self.filename = filename
+        basename = os.path.basename(filename)
+        self.name, extension = os.path.splitext(basename)
     
 '''
 import xml.etree.ElementTree as ET

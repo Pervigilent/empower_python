@@ -33,7 +33,7 @@ class MainWindow(tk.Tk):
 		self.create_windows()
 		
 		self.model = parent
-		self.controller = MainWindowController(model=parent, view=self)
+		self.controller = MainController(model=parent, view=self)
 		
 	def set_controller(self, controller):
 		self.controller = controller
@@ -228,6 +228,8 @@ class MainWindow(tk.Tk):
 		self.left_frame = ttk.Frame(self.middle_frame, width=MainWindow.LEFT_FRAME_WIDTH)
 		self.right_frame = ttk.Frame(self.middle_frame, width=MainWindow.RIGHT_FRAME_WIDTH)
 		self.upper_left_frame = ProjectManager(self.left_frame) # Project Manager - Treeview
+		self.project_manager = self.upper_left_frame
+		
 		self.lower_left_frame = Properties(self.left_frame) # Properties - Table
 		self.upper_right_frame = Display(self.right_frame) # Display / Work area
 		self.lower_right_frame = ttk.Frame(self.right_frame)
@@ -264,7 +266,7 @@ class MainWindow(tk.Tk):
 	def insert_empower_design(self):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
 		
-	def open(self, filename):
+	def open(self):
 		filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
 		filename = fd.askopenfilename(
 			title='Select EMPower file',
@@ -272,7 +274,7 @@ class MainWindow(tk.Tk):
 			filetypes=filetypes
 		)
 		if filename:
-			parent.read(filename)
+			self.parent.read(filename)
 	
 	def open_reference(self, filename):
 		if os.name == 'nt':  # Windows
@@ -321,7 +323,7 @@ class MainController:
 		self.model.notify()
 	
 	def update(self):
-		pass
+		self.view.project_manager.set_projects(self.model.get_projects())
 		
 	def on_change(self):
 		self.update()
