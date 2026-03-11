@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AnsoftProject
-  Created="Fri Aug 25 13:15:06 2023'
+  Created="Fri Aug 25 13:15:06 2023"
   Product="ElectronicsDesktop"
   FileOwnedByWorkbench="False"
   
@@ -18,7 +18,7 @@
   MoveBackwards="False">
 
 <AnsoftProject
-  Created="Fri Aug 25 13:15:06 2023'
+  Created="Fri Aug 25 13:15:06 2023"
   Product="ElectronicsDesktop"
   FileOwnedByWorkbench="false">
   
@@ -28,7 +28,7 @@
 -->
   <Desktop>
     Version(2025, 2)
-    InfrastrutureVersion(1, 0)
+    InfrastructureVersion(1, 0)
   </Desktop>
   <Definitions>
     <Materials>

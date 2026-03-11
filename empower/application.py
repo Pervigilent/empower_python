@@ -65,6 +65,9 @@ class Project:
     def __init__(self, element):
         self.element = element
         self.name = element.get("Name")
+        
+    def get_name(self):
+        return self.name
 
 
 class ProjectFile:
@@ -80,9 +83,9 @@ class ProjectFile:
         with open(filename, 'r') as file:
             self.content = file.read()
         try:
-            self.tree = ET.parse(filepath)
-            self.root = tree.getroot()
-            self.parse(tree=tree)
+            self.tree = ET.parse(filename)
+            self.root = self.tree.getroot()
+            self.parse(tree=self.tree)
         except ET.ParseError as e:
             messagebox.showerror("File Parse Error", f"Failed to read file:\n{e}")
         except Exception as e:
@@ -103,7 +106,7 @@ class ProjectFile:
         #self.root = self.tree.getroot()
         #self.projects = []
         for model in self.root.iter("HFSSModel"):
-            self.projects.append(ProjectElement(model))
+            self.projects.append(Project(model))
             
     def get_name(self):
         if self.filename is not None:
