@@ -66,10 +66,10 @@ class ProjectManager(ttk.Frame):
 				self.tree.delete(item)
 			counter = 0
 			for project in self.projects:
-			    self.items.append(self.tree.insert("", tk.END, project.get_name()))
+			    self.items.append(self.tree.insert("", tk.END, text=project.get_name()))
 			    subprojects = []
 			    for subproject in project.projects:
-			            subprojects.append(self.tree.insert(self.items[counter], tk.END, subproject.get_name()))
+			        subprojects.append(self.tree.insert(self.items[counter], tk.END, text=subproject.get_name()))
 			    self.subitems.append(subprojects)
 			    counter += 1
 
