@@ -68,7 +68,7 @@ class MainWindow(tk.Tk):
 		self.file_menu.add_command(label='Import', command=self.generic_callback)
 		self.file_menu.add_command(label='Export', command=self.generic_callback)
 		self.file_menu.add_separator()
-		self.file_menu.add_command(label='Exit', command=self.exit_application)
+		self.file_menu.add_command(label='Exit', command=self.shutdown)
 		self.menubar.add_cascade(label='File', menu=self.file_menu, underline=0)
 		
 		# Empower File Menu
@@ -94,7 +94,7 @@ class MainWindow(tk.Tk):
 		self.empower_file_menu.add_command(label='Import', command=self.generic_callback)
 		self.empower_file_menu.add_command(label='Export', command=self.generic_callback)
 		self.empower_file_menu.add_separator()
-		self.empower_file_menu.add_command(label='Exit', command=self.exit_application)
+		self.empower_file_menu.add_command(label='Exit', command=self.shutdown)
 		self.empower_menubar.add_cascade(label='File', menu=self.empower_file_menu, underline=0)
 		
 		# Base Project Menu
@@ -263,10 +263,6 @@ class MainWindow(tk.Tk):
 	def generic_callback(self):
 		pass
 		
-	def exit_application(self):
-	    self.cleanup()
-	    self.destroy()
-			
 	def insert_empower_design(self):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
 		
@@ -303,6 +299,10 @@ class MainWindow(tk.Tk):
 			)
 		if filename:
 			self.parent.save_as(filename)
+
+	def shutdown(self):
+	    self.cleanup()
+	    self.destroy()
 
 ## Accessory functions
 
