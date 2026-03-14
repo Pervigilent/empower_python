@@ -44,9 +44,13 @@ class ProjectManager(ttk.Frame):
 
 		self.frame = ttk.Labelframe(self, text="Project Manager")
 		self.tree = ttk.Treeview(self.frame)
+		self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
 		self.tree.grid(row=0, column=0, sticky="nsew")
 		self.frame.grid(row=0, column=0, sticky="nsew")
+		
+	def on_select(self, event):
+	    pass
 
 	def set_projects(self, value):
 		self.projects = value
