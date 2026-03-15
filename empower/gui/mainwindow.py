@@ -48,7 +48,7 @@ class MainWindow(tk.Tk):
 		# Base File Menu
 		self.file_menu = tk.Menu(self.menubar, tearoff=0)
 		self.file_menu.add_command(label='New', command=self.generic_callback)
-		self.file_menu.add_command(label='Open...', command=self.generic_callback)
+		self.file_menu.add_command(label='Open...', command=self.open)
 		self.file_menu.add_command(label='Open Examples...', command=self.generic_callback)
 		self.file_menu.add_command(label='Close', command=self.generic_callback)
 		self.file_menu.add_separator()
@@ -267,14 +267,15 @@ class MainWindow(tk.Tk):
 		self.switch_window_mode(mode=WindowMode.EMPOWER)
 		
 	def open(self):
-		filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
-		filename = fd.askopenfilename(
-			title='Select EMPower file',
-			#initialdir='./',
-			filetypes=filetypes
-		)
-		if filename:
-			self.parent.read(filename)
+	    if self.window_mode == WindowMode.BASE or self.window_mode == WindowMode.EMPOWER:
+		    filetypes = (('EMPower file', '*.emp'), ('Ansys file', '*.aedt'))
+		    filename = fd.askopenfilename(
+			    title='Select EMPower file',
+			    #initialdir='./',
+			    filetypes=filetypes
+		    )
+		    if filename:
+			    self.parent.read(filename)
 	
 	def open_reference(self, filename):
 		if os.name == 'nt':  # Windows

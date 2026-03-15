@@ -43,14 +43,19 @@ class ProjectManager(ttk.Frame):
 		self.subitems = []
 
 		self.frame = ttk.Labelframe(self, text="Project Manager")
-		self.tree = ttk.Treeview(self.frame)
+		self.tree = ttk.Treeview(self.frame, selectmode="browse")
 		self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
 		self.tree.grid(row=0, column=0, sticky="nsew")
 		self.frame.grid(row=0, column=0, sticky="nsew")
 		
 	def on_select(self, event):
-	    pass
+		selected_items = self.tree.selection()
+		if selected_items:
+			item_iid = selected_items[0]
+			item_data = self.tree.item(item_iid)
+			item_text = item_data['text']
+			item_value = item_data['values']
 
 	def set_projects(self, value):
 		self.projects = value
@@ -70,12 +75,12 @@ class ProjectManager(ttk.Frame):
 				self.tree.delete(item)
 			counter = 0
 			for project in self.projects:
-			    self.items.append(self.tree.insert("", tk.END, text=project.get_name()))
-			    subprojects = []
-			    for subproject in project.projects:
-			        subprojects.append(self.tree.insert(self.items[counter], tk.END, text=subproject.get_name()))
-			    self.subitems.append(subprojects)
-			    counter += 1
+				self.items.append(self.tree.insert("", tk.END, text=project.get_name()))
+				subprojects = []
+				for subproject in project.projects:
+					subprojects.append(self.tree.insert(self.items[counter], tk.END, text=subproject.get_name()))
+				self.subitems.append(subprojects)
+				counter += 1
 
 
 class Properties(ttk.Frame):
